@@ -1,0 +1,97 @@
+################################################################################
+# This script loads the raster data, crops to each tile, and outputs a single
+# data frame as part of the California Biopower Impact Project. 
+#
+# Author: Micah Wright, Humboldt State University
+################################################################################
+
+# load the necessary packages
+library(raster)
+library(data.table)
+library(parallel)
+
+
+# raster file paths
+raster_paths <- list(#"FCID2018" = "data/UW/FCID2018_masked_V2.tif", # change to new mask created with diff FCCS mask Canopt_tot == 0 method
+                        "FCID2018" = "data/UW/FCID2018_masked_V5.tif",     
+                        "Slope" = "data/Other/DEM/Slope_NAD83.tif",
+                     "fuelbed_number" = "data/FCCS/spatial/FCCS_NAD83.tif", 
+                     "Fm10_50" = "data/GEE/resampled/fm10_50.tif",
+                     "Fm1000_50" = "data/GEE/resampled/fm1000_50.tif",
+                     "Wind_50" = "data/GEE/resampled/windv_50.tif",
+                     "Fm10_97" = "data/GEE/resampled/fm10_97.tif",
+                     "Fm1000_97" = "data/GEE/resampled/fm1000_97.tif",
+                     "Wind_97" = "data/GEE/resampled/windv_97.tif",
+                     "Fm10_rx" = "data/GEE/resampled/fm10_375.tif",
+                     "Fm1000_rx" = "data/GEE/resampled/fm1000_375.tif",
+                     "Wind_rx" = "data/GEE/resampled/windv_375.tif",
+                    # "days_since_rain_rx" = "data/GEE/resampled/mean_rx_days.tif",
+                    # "days_since_rain_wf" = "data/GEE/resampled/mean_wf_days.tif",
+                     "TPI" = "data/Other/DEM/dem_dev_2g_NAD83.tif",
+                     # "CWD_K" = "data/Other/Decay/rasters/with_cm/cwd_cm.tif",
+                     # "FWD_K" = "data/Other/Decay/rasters/with_cm/fwd_cm.tif",
+                     # "Foliage_K" = "data/Other/Decay/rasters/with_cm/foliage_cm.tif")
+                    # MB 7/3/19 new decay rasters added, old ones had a clipping issue that removed some data and resulted in empty tiles
+                     "CWD_K" = "data/Other/Decay/rasters/with_cm/rast_cwd_V3.tif", 
+                     "FWD_K" = "data/Other/Decay/rasters/with_cm/rast_fwd_V3.tif",
+                     "Foliage_K" = "data/Other/Decay/rasters/with_cm/foliage_V3.tif")
+
+# function to load and crop raster to tile
+get_raster_fun <- function(x, poly) {
+        r <- raster(x)
+        rc <- crop(r, poly)
+        return(rc)
+}
+
+# load the tiles
+tiles <- sf::st_read("data/Tiles/clipped_tiles/clipped_tiles.shp",
+                     quiet = TRUE)
+
+################## 6/20/19 Edits By Max Blasdel to reproject data #############################
+## Check that all projections are the same
+proj_list <- lapply(raster_paths, function(r) {
+        x <- crs(raster(r))
+        y <- extent(raster(r))
+        return(list(x, y))
+})
+# minor difference in the FCID raster having different default values. This should not affect the run
+unique(unlist(proj_list))
+
+
+x <- raster(raster_paths[[2]])
+tiles <- sf::st_transform(tiles, crs = crs(x))
+rm(x)
+###############################################################################################
+
+# split tiles by ID number
+tile_list <- split(tiles, tiles$ID)
+
+# remove full tile polygon
+rm(tiles)
+
+# make a dt and save it for each tile
+mclapply(tile_list,
+         mc.cores = detectCores() - 10, # originally written to use n cores - 1. On hagrid reducing this further to accomodate other projects
+         function(x) { 
+                 
+                 rlist <- lapply(raster_paths, function(i) {
+                         
+                         get_raster_fun(i, x)
+                         
+                 })
+                 
+                 # stack the rasters
+                 rstack <- stack(rlist)
+
+                 rdf <- as.data.frame(rstack, 
+                                      xy = TRUE,
+                                      na.rm = TRUE) 
+                 
+                 rdf <- as.data.table(rdf)
+                 
+                 saveRDS(rdf,
+                         file = paste0("data/Tiles/input/", # change folder for different input files
+                                       x$ID, 
+                                       ".rds"))
+                 
+         })

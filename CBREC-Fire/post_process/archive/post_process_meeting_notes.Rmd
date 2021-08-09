@@ -1,0 +1,551 @@
+---
+title: "post process fire output"
+output: html_document
+author: "Max Blasdel"
+date: "May 30th, 2019"
+---
+
+## Duplicate of post process markdown with examinations into anomolies. 
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 20)
+```
+
+load relevant packages
+```{r message=FALSE}
+library(tidyverse)
+library(raster)
+```
+
+# Define constants
+
+Cell size: 900 square meters
+Square meters per acre: 4046.86
+
+```{r}
+acres_per_cell <- 900 / 4046.86
+```
+
+Find all output folders
+Five 'runs' or groups of tiles were run on May 30, 2019. These will be examined seperately.
+
+```{r}
+# Tiles that were run May 30 2019
+# path to all tiles *updated June 6 2019
+path <- "../../data/Tiles/Test_Runs/emissions"
+```
+
+Define runs. Each run is a slice latitudinally 
+```{r}
+Run1 <- seq(304, 368)
+Run2 <- seq(2139,2233)
+Run3 <- seq(5912,6056)
+Run4 <- seq(8780,8845)
+Run5 <- seq(10888,10945)
+```
+
+Read in scenario matrix for reference
+
+```{r}
+scenarios_matrix <- read_csv("../../data/SERC/scenarios.csv", col_types = cols() )
+
+View(scenarios_matrix)
+```
+
+# functions
+
+Dir function for getting all folders of interest and second dir function to find all rds files in each folder for a given scenario
+```{r}
+# accepts vector and retrieves all tile directories corresponding to vector
+getDirs <- function(path, start, end) {
+  f <- dir(path, 
+           pattern = paste0("^", as.character(seq(start, end)), "$", collapse = "|"),
+           full.names = T)
+  return(f)
+}
+
+# Uses scenario Id and year of interest
+# year 0 is treated differently due to the first and second burns
+#TODO figure out how to deal with first and second burns
+# I think I want to sum the first and second
+getScenariosId <- function(path, id, year) {
+
+  f <- dir(path,
+           pattern =paste("first-.*-.*-",id, "-", "\\d+","-",year,".rds$", sep = ""),
+           recursive = T,
+           full.names = T)
+  # account for wildfire after RX burn
+  if (year == 0) {
+   s <- dir(path,
+           pattern =paste("second-.*-.*-",id, "-", "\\d+","-",year,".rds$", sep = ""),
+           recursive = T,
+           full.names = T)
+   f <- dir(path,
+           pattern =paste("first-.*-.*-",id, "-", "\\d+","-",year,".rds$", sep = ""),
+           recursive = T,
+           full.names = T)
+   
+   if (length(s) == 0) { # 'second' burn does not appear in every year zero scenario
+           return(f)
+        } else {
+                message("This runs contains a second burn and I haven't figured out a way to deal with this yet.")
+        return(list(f,s)) # I want these as seperate lists     
+          }
+        } else {
+return(f)
+          }
+}
+
+# function for getting scenario name
+# requires scenario matrix
+getScenarioName <- function(id) {
+        if (!exists('scenarios_matrix')) {
+        scenarios_matrix <- read_csv("../../data/SERC/scenarios.csv", col_types = cols())
+        }
+        f <- scenarios_matrix %>% 
+              dplyr::filter(ID == id) %>% 
+                paste(collapse = "-")
+        f <- sub("\\d+.", "", f)
+        return(f)
+}
+
+# Without accounting for the second burn scenarios
+getScenariosIdSimp <- function(path, id, year) {
+
+  f <- dir(path,
+           pattern =paste("-", id, "-", "\\d+","-",year,".rds$", sep = ""),
+           recursive = T,
+           full.names = T)
+
+  return(f)
+}
+
+# Functions to bind data together, either with column drops or no column drops
+getDataBindSimple <- function (data) {
+        d <- bind_rows(lapply(data, read_rds)) %>% 
+        dplyr::select(-c("fuelbed_number",
+                  "FCID2018",
+                  "ID",
+                  "Silvicultural_Treatment",
+                  "Burn_Type",
+                  "Fraction_Piled",
+                  "Fraction_Scattered",
+                  "Biomass_Collection",
+                  "Pulp_Market",
+                  # "Secondary_Burn", # removing this var since it is important for year 0
+                  "Year"))
+        return(d)
+}
+
+# with no drop of columns
+getDataBindAll <- function (data) {
+        d <- bind_rows(lapply(data, read_rds))
+        return(d)
+}
+
+# Wrapper function to call a dataframe by id and year from a given test slice
+getDataWrapper <- function(path, runN, id, year, all = F) {
+        
+        start <- min(runN)
+        end <- max(runN)
+
+        run <- getDirs(path = path, start = start, end = end)
+        
+        t <- getScenariosId(path = run, id = id, year = year)
+        
+        # choose which data bind function to use
+        if (all == F){
+                t <- getDataBindSimple(t)        
+        } else {
+                t <- getDataBindAll(t)
+        }
+        
+        n <- getScenarioName(id)
+        
+        return(list(t, n))
+}
+```
+
+# Speed test
+This is a test knowing the full dataset will be much larger
+
+In summary the readr::read_rds() and dplyr::bind_rows() was significantly faster, although I beleive these functions use more memory than the base::readRDS 
+
+```{r}
+# start <- Sys.time()
+# do.call(rbind,lapply(scen, readRDS)) # slower
+# Sys.time() - start
+
+# start <- Sys.time()
+# bind_rows(lapply(scen, read_rds)) # faster
+# Sys.time() - start
+```
+
+# plot functions
+```{r}
+histoGraph <- function(data, var, title = FALSE, subtitle = FALSE) {
+        
+        if(title == T) {subtitle = F} # title overrides subtitle
+        
+        g_title <- data[[2]]
+        
+        g <- ggplot(data[[1]]) +
+                theme_minimal() +
+                geom_histogram(aes_string(var), bins = 50)
+                
+         if(title == TRUE){
+                g <- g + labs(title = g_title)
+         } else if(subtitle == TRUE) {
+                g <- g + labs(subtitle = g_title)
+         }
+        g
+}
+```
+
+
+
+## Boxplot helper functions
+```{r}
+# for labeling sample size, y argument changes height, may need to be adjusted for individual plots
+give.n <- function(x){
+   return(c(y = -0.3, label = length(x)))
+}
+
+# for extending the whisker lengths
+f <- function(x) {
+  r <- quantile(x, probs = c(0.01, 0.25, 0.5, 0.75, 0.99)) # these numbers show the % range, anything outside the numbers will not be shown on the plot
+  names(r) <- c("ymin", "lower", "middle", "upper", "ymax")
+  r
+}
+
+# create total emissions by size class
+getGrossEmissions <- function(data) {
+        data <- data %>% 
+        mutate(gross_CO2 = acres_per_cell * (total_duff_residue_CO2 +
+                       total_foliage_residue_CO2 +
+                       total_fwd_residue_CO2 +
+                       total_cwd_residue_CO2),
+                gross_CH4 = acres_per_cell * (total_duff_residue_CH4 +
+                       total_foliage_residue_CH4 +
+                       total_fwd_residue_CH4 +
+                       total_cwd_residue_CH4),
+                gross_PM2.5 = acres_per_cell * (total_duff_residue_PM2.5 +
+                       total_foliage_residue_PM2.5 +
+                       total_fwd_residue_PM2.5 +
+                       total_cwd_residue_PM2.5))
+        return(data)
+}
+
+# wrapper to format data correctly
+boxPlotWrapper <- function(run, num, id, year) {
+        data <- getDataWrapper(path = path, runN = run, id = id, year = year)
+        # calculate gross emissions values, changed to transmute
+        data[[1]] <- getGrossEmissions(data[[1]])
+        # add run identifier
+        data[[1]] <- data[[1]] %>% 
+                mutate(run = as.character(num))
+        return(data[[1]])
+}
+```
+
+Define variables of interest and generate box plot data in correct format
+
+```{r}
+id = 287
+year = 0
+
+r1 <- getDataWrapper(path , Run1, id, year, all = T)
+r2 <- getDataWrapper(path , Run2, id, year, all = T)
+r3 <- getDataWrapper(path , Run3, id, year, all = T)
+r4 <- getDataWrapper(path , Run4, id, year, all = T)
+r5 <- getDataWrapper(path , Run5, id, year, all = T)
+
+
+data <- rbind(r1[[1]], r2[[1]], r3[[1]], r4[[1]], r5[[1]])
+
+getScenarioName(id)
+```
+
+Perform a check on different scenario with a second burn
+Checks out. All foliage is consumed in first burn
+
+```{r}
+t = r1[[1]]
+# check the dirs
+t <- getDirs(path, start = min(Run1), end = max(Run1))
+
+t <- getScenariosIdSimp(path = t, id = 11, year = 0)
+
+t <- getDataBindAll(t)
+
+
+t <- t %>%
+        mutate(metric = total_foliage_consumed / total_foliage_exposed)
+
+t %>% 
+        filter(metric == Inf)
+
+t <- t %>%
+        mutate(metric = total_fwd_consumed / total_fwd_exposed)
+
+t$metric %>% is.na() %>% sum()
+
+t$metric %>% unique()
+
+
+# the NaN values are showing up due to fwd being exposed. These are the cells that have foliage exposed but not consumed
+t %>% 
+        filter(is.na(metric))
+
+
+t <- t %>% 
+        mutate(metric = total_foliage_exposed / total_foliage_consumed)
+
+t %>% 
+        filter(is.na(metric))
+
+t %>% 
+        filter(metric == Inf)
+
+t %>% 
+        filter(total_foliage_consumed == 0)
+
+t %>% 
+        dplyr::select(metric, total_fwd_consumed) %>% 
+        filter(is.na(metric))
+```
+# ###meeting
+
+# looking into issue of foliage not being consumed
+
+subset on foliage that is exposed to fire and then not burned
+```{r}
+data <- data %>% 
+        mutate(metric = total_foliage_consumed / total_foliage_exposed)
+
+# no na's which is good
+data$metric %>% is.na() %>% sum()
+
+# there are lots of values less than 1 and not zero
+data %>% 
+        count(metric)
+```
+
+
+test for same cells
+```{r}
+# run with 277
+allScat <- data %>% 
+        filter(total_foliage_consumed == 0 & total_fwd_consumed == 0) %>% 
+        dplyr::select(x,y,ID)
+
+# run with 287
+someScat <- data %>%
+        filter(total_foliage_consumed == 0 & total_fwd_consumed == 0) %>% 
+        dplyr::select(x,y,ID)
+
+
+identical(allScat %>% dplyr::select(-ID), someScat %>% dplyr::select(-ID))
+```
+
+
+look for fwd exposed by not consumed
+```{r}
+data <- data %>% 
+        mutate(metric = total_fwd_consumed / total_fwd_exposed)
+
+data$metric %>% is.na() %>% sum()
+
+# filter data by metric that gets an error. These are cells with 0 for fwd exposed and only have foliage exposed.
+# look at the FCID for these cells
+data %>% 
+        filter(is.na(metric))
+
+data %>% 
+        filter(is.na(metric)) %>% 
+        dplyr::select(FCID2018) %>% 
+        unique() #%>% 
+        paste(collapse = ",") %>% length()
+        #write.table("out/fcid_explore.txt")
+# to explore in arc when time permits        
+```
+
+Filter the data, not the best way to engage with data since the differences are very small
+```{r}
+data %>% 
+        ggplot(aes(metric))+
+        theme_minimal() +
+        geom_histogram(bins = 90 , binwidth = .01) +
+         labs(subtitle = paste("For Year: ",as.character(year)),
+             y = "Frequency", x= "Consumed / Exposed")
+
+# ugly method of calculating the percent of odd cells 
+# c <- data %>% 
+#         count(metric)
+# 
+# lessThan <- c %>% 
+#         filter(metric != 1) %>% 
+#         summarise_at(.vars = 2, .funs = sum)
+# 
+# equals <- c %>% 
+#         filter(metric == 1) %>% 
+#         summarise_at(.vars = 2, .funs = sum)
+# 
+# lessThan / equals
+```
+
+
+find some more examples of piled fuel emissions but no scattered emissions
+```{r}
+id = 319
+year = 0
+
+r1 <- getDataWrapper(path , Run1, id, year, all = T)
+
+r1 <- r1[[1]]
+
+r1 %>% 
+        filter(total_foliage_consumed == 0)
+
+
+data <- r1 %>% 
+        mutate(metric = total_foliage_consumed / total_foliage_exposed)
+
+
+data %>% 
+        filter(total_foliage_exposed != 0 & total_foliage_consumed == 0)
+
+
+ggplot(data) +
+        geom_histogram(aes(metric))
+```
+
+
+```{r}
+data %>% 
+        filter(is.na(metric) & total_fwd_exposed == 0)# %>% 
+        summarise_at(.vars = c(14:70), .funs = sum)
+
+rows_of_interest <- c("x", "y", "total_foliage_exposed")
+
+d <- data %>% 
+        filter(metric == 0 & total_fwd_exposed == 0)# %>% 
+        select(rows_of_interest)
+
+# raster from xyz
+r <- raster::rasterFromXYZ(d, res = c(30,30), crs = "+proj=aea +lat_1=34 +lat_2=40.5 +lat_0=0 +lon_0=-120 +x_0=0 +y_0=-4000000 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0")
+
+#writeRaster(r, "out/raster/problem_cells.tif", overwrite = T)
+```
+
+Plot data
+```{r}
+data %>% 
+        ggplot(aes(metric))+
+        theme_minimal() +
+        geom_histogram(bins = 30 , binwidth = .01) +
+         labs(subtitle = paste("For Year: ",as.character(year)),
+             y = "Frequency", x= "Consumed / Exposed")
+
+data$metric %>% unique()
+
+data %>% 
+        filter(metric == 0)
+
+# TODO output raster of these cells
+```
+
+
+Create graphs
+
+```{r}
+# Define title of graphs
+title <- getScenarioName(id)
+
+# with extended whiskers
+ggplot(box_data, aes(run, gross_CO2)) +
+        theme_minimal() +
+        theme(text = element_text(size = 15)) +
+        stat_summary(fun.data = f, geom = "boxplot") + # whiskers controlled by fun.data = f // see f
+        labs(title = title, subtitle = paste("For Year: ",as.character(year)),
+             y = "Gross CO2 tons per cell") +
+        stat_summary(fun.data = give.n, 
+                     geom = "text", 
+                     position = "dodge",
+                     size = 4)
+
+# shows outliers
+ggplot(box_data, aes(run, gross_CO2)) +
+        theme_minimal() +
+        theme(text = element_text(size = 15)) +
+        geom_boxplot() +
+        labs(title = title, subtitle = paste("For Year: ",as.character(year)),
+             y = "Gross CO2 tons per cell") +
+        stat_summary(fun.data = give.n, 
+                     geom = "text", 
+                     position = "dodge",
+                     size = 4)
+```
+
+Given the large amount of outliers view a historgram of the data
+```{r}
+box_data %>% 
+        filter(run == '1') %>% 
+        ggplot(aes(gross_CO2))+
+        theme_minimal() +
+        geom_histogram() +
+         labs(title = title, subtitle = paste("For Year: ",as.character(year)),
+             y = "Frequency", x= "Gross CO2 tons per cell")
+
+# Zoom in to lower limits
+box_data %>% 
+        filter(run == '1') %>% 
+        filter(gross_CO2 <= 0.2) %>% # filtering based on gross CO2 value
+        ggplot(aes(gross_CO2))+
+        theme_minimal() +
+        geom_histogram() +
+         labs(title = title, subtitle = paste("For Year: ",as.character(year)),
+             y = "Frequency", x= "Gross CO2 tons per cell")
+
+
+# Zoom in to lower limits
+box_data %>% 
+        filter(run == '1') %>% 
+        filter(gross_CO2 <= 0.2) %>% 
+        ggplot(aes(gross_CO2))+
+        theme_minimal() +
+        geom_histogram(binwidth = .001) +
+         labs(title = title, subtitle = paste("For Year: ",as.character(year)),
+             y = "Frequency", x= "Gross CO2 tons per cell")
+```
+
+# Raster function
+
+Develop function to read in data and output raster object based on some specifications
+
+```{r}
+data <- getDataWrapper(path, runN = Run3, id = 661, year = 25, all = F)
+
+data <- getGrossEmissions(data[[1]])
+
+# define rows of interest
+rows_of_interest <- c("x", "y", "gross_CO2")
+
+d <- data %>%
+        select(rows_of_interest)
+
+# raster from xyz
+r <- raster::rasterFromXYZ(d, res = c(30,30), crs = "+proj=aea +lat_1=34 +lat_2=40.5 +lat_0=0 +lon_0=-120 +x_0=0 +y_0=-4000000 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0")
+
+# test plot
+raster::plot(r)
+
+getScenarioName(661)
+
+#writeRaster(r, "out/raster/run3.tif")
+```
+
+

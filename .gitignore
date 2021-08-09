@@ -34,3 +34,11 @@ vignettes/*.pdf
 
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
+
+# CBREC-Fire input and output data
+CBREC-Fire/input
+CBREC-Fire/output
+
+# CBREC-LCA input and output data
+CBREC-LCA/input
+CBREC-LCA/output

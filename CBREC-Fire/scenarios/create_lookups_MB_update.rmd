@@ -1,0 +1,167 @@
+---
+Title: "Update Scenario Matrix"
+Author: "Micah Wright & Max Blasdel & Jerome Carman"
+Date: "August 14, 2019"
+---
+
+# First update to script written by Micah that takes the scneario matrix and partiitons into lookup tables
+# Second update by Jerome Carman adds ability to subset to specific case IDs. Also removed "NoAction" cases until code is fixed to handle this case
+
+Load the necessary packages and set output directory.
+
+```{r message=FALSE}
+library(readxl)
+library(tidyverse)
+
+data_dir <- "/media/spin/cbi/CBREC-Fire/data/SERC/"
+```
+
+# Create list of characteristics used to subset the scenario list if desired
+```{r}
+subset_cases <- TRUE
+
+if(subset_cases) {
+        cases <- list(treatment_options = c("20_Thin_From_Below","40_Thin_From_Below","40_Thin_From_Above","Clearcut"),
+                         fraction_pile_options = c("0","30","50"),
+                         biomass_collection_options = c("No","Piles Only","All Tech Recoverable"),
+                         burn_type_options = c("None","Pile","Broadcast"),
+                         pulp_options = c("No"))
+} else {
+        cases <- NULL
+}
+```
+
+# Extract Scenarios Lookup Table
+
+Load the scenario matrix, and extract the different scenarios.
+
+```{r message=FALSE}
+#Load in scenarios
+scenarios <- read_csv(paste0(data_dir,"Scenario_Matrix_v12_model-input.csv"),
+                      col_names = FALSE)
+scenarios_names <- as.character(scenarios[1,])
+scenarios_names <- str_replace_all(scenarios_names, " ", "_")
+scenarios <- scenarios[-1, 1:8]
+names(scenarios) <- scenarios_names[1:8]
+
+#Re-structure data to make it more R friendly
+scenarios <- scenarios %>%
+        filter(Slope == "LT40") %>% # slope is calculated for each cell in the fire code
+        select(-Slope) %>%
+        rename(Fraction_Piled = Fraction_Piled_Residues,
+               Fraction_Scattered = Fraction_Scattered_Residues) %>%
+        mutate(ID = as.integer(ID),
+               Silvicultural_Treatment = gsub(" ", "_", Silvicultural_Treatment),
+               Fraction_Piled = gsub("[%]", "", Fraction_Piled),
+               Fraction_Scattered = gsub("[%]", "", Fraction_Scattered),
+               Burn_Type = ifelse(Burn_Type == "No", "None", Burn_Type)) %>%
+        mutate(Silvicultural_Treatment = gsub("[%]", "", Silvicultural_Treatment))
+
+#Subset to desired options
+if(subset_cases) {
+        scenarios <- scenarios %>% filter(Silvicultural_Treatment %in% cases$treatment_options) %>%
+                        filter(Fraction_Piled %in% cases$fraction_pile_options) %>%
+                        filter(Biomass_Collection %in% cases$biomass_collection_options) %>%
+                        filter(Burn_Type %in% cases$burn_type_options) %>%
+                        filter(Pulp_Market %in% cases$pulp_options)
+}
+
+# noaction <- data.frame(ID = c(max(scenarios$ID) + 1,
+#                               max(scenarios$ID) + 2),
+#                        Silvicultural_Treatment = rep("No_Action", 2),
+#                        Fraction_Piled = rep("0", 2),
+#                        Fraction_Scattered = rep("0", 2),
+#                        Burn_Type = c("None", "Broadcast"),
+#                        Biomass_Collection = rep("None", 2),
+#                        Pulp_Market = rep("No", 2),
+#                        stringsAsFactors = FALSE)
+# 
+# scenarios <- bind_rows(scenarios, noaction)
+# 
+# rm(noaction)
+
+write_csv(scenarios, paste0(data_dir,"lookup_tables/limited-cases/scenarios_limited.csv"))
+```
+
+# Extract Biomass Fate Lookup Tables
+
+Creat a helper function that saves the scenario-specific biomass fate lookup tables after some minor munging to correct column names, etc.
+
+```{r}
+get_sections <- function(fraction_type, col_range, dir_data, caselist = NULL) {
+        
+        section <- read_csv(paste0(dir_data,"Scenario_Matrix_v12_model-input.csv"),
+                      col_names = FALSE)
+        
+        section_names <- as.character(section[1,])
+        
+        section <- section[-1, c(1:8, col_range)] # col_range will be fed into the function depending on the fraction type
+        
+        # remove character before fraction type for uniformity - Blasdel 6/21/19
+        names(section) <- c(section_names[1:8], gsub(".*_", "", section_names[col_range]))
+        
+        #Edit scenario characteristic values
+        section <- section %>%
+                select(-contains("Bark")) %>% # while bark is removed the percentage is always the same as the parent material (4to6Stem & 4to6Bark have the same %)
+          # Bark is later summed with its parent material so a single percentage can be used to partition the mass sum
+                transmute(ID = as.integer(ID),
+                          Slope_Class = ifelse(Slope == "GT40", 80, 40),
+                          Silvicultural_Treatment = gsub(" ", "_", `Silvicultural Treatment`),
+                          Fraction_Piled = gsub("[%]", "",`Fraction_Piled_Residues`),
+                          Fraction_Scattered = gsub("[%]", "", `Fraction_Scattered_Residues`),
+                          Burn_Type = ifelse(`Burn Type` == "No", "None", `Burn Type`),
+                          Biomass_Collection = `Biomass Collection`,
+                          Pulp_Market = `Pulp Market`,
+                          Stem_ge9 = as.numeric(gsub("[%]", "", `Stem9Plus`))/100, # these columns will need to change
+                          Stem_6t9 = as.numeric(gsub("[%]", "", `Stem6to9`))/100,
+                          Stem_4t6 = as.numeric(gsub("[%]", "", `Stem4to6`))/100,
+                          Branch = as.numeric(gsub("[%]", "", Branch))/100,
+                          Foliage = as.numeric(gsub("[%]", "", Foliage))/100) %>%
+                # add_row(ID = rep(c(703, 704), 2),
+                #         Slope_Class = rep(c(40, 80), each = 2),
+                #         Silvicultural_Treatment = rep("No_Action", 4),
+                #         Fraction_Piled = rep("0", 4),
+                #         Fraction_Scattered = rep("0", 4),
+                #         Burn_Type = rep(c("None", "Broadcast"), 2),
+                #         Biomass_Collection = rep("None", 4),
+                #         Pulp_Market = rep("No", 4),
+                #         Stem_ge9 = rep(0.0, 4),
+                #         Stem_6t9 = rep(0.0, 4),
+                #         Stem_4t6 = rep(0.0, 4),
+                #         Branch = rep(0.0, 4),
+                #         Foliage = rep(0.0, 4)) %>%
+                mutate(Silvicultural_Treatment = gsub("[%]", "", Silvicultural_Treatment))
+        
+        #Subset to desired options if a caselist is passed to the function
+        if(!is.null(caselist)) {
+                section <- section %>% filter(Silvicultural_Treatment %in% caselist$treatment_options) %>%
+                        filter(Fraction_Piled %in% caselist$fraction_pile_options) %>%
+                        filter(Biomass_Collection %in% caselist$biomass_collection_options) %>%
+                        filter(Burn_Type %in% caselist$burn_type_options) %>%
+                        filter(Pulp_Market %in% caselist$pulp_options)
+        }
+        
+        write_csv(section, paste0(dir_data, "lookup_tables/limited-cases/", fraction_type, ".csv"))
+}
+```
+
+Create lists for fraction type and cell range.
+
+```{r}
+type_list <- list("recovered_by_size",
+                  "harvested_biomass",
+                  "piled_fuels",
+                  "scattered_in_field")
+
+range_list <- list(9:16, # numbers changed here
+                   17:24,
+                   25:32,
+                   33:40)
+```
+
+Iterate the function over the two lists.
+
+```{r results=FALSE, message=FALSE}
+map2(type_list, range_list, function(x, y) get_sections(x, y, data_dir, cases)) 
+```
+

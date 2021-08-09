@@ -1,0 +1,142 @@
+---
+title: "SERC biomass scenario analysis"
+author: "Micah Wright"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "../..")
+```
+
+# Purpose
+
+This document loads the SERC scenario matrix and partitions it into lookup tables for later use.
+
+# Setup
+
+Load the necessary packages.
+
+```{r message=FALSE}
+library(readxl)
+library(tidyverse)
+```
+
+# Extract Scenarios Lookup Table
+
+Load the scenario matrix, and extract the different scenarios.
+
+```{r message=FALSE}
+scenarios <- read_csv("data/SERC/Scenario_Matrix_v11_model-input.csv",
+                      col_names = FALSE)
+
+scenarios_names <- as.character(scenarios[1,])
+
+scenarios_names <- str_replace_all(scenarios_names, " ", "_")
+
+scenarios <- scenarios[-1, 1:8]
+
+names(scenarios) <- scenarios_names[1:8]
+
+scenarios <- scenarios %>%
+        filter(Slope == "LT40") %>%
+        select(-Slope) %>%
+        rename(Fraction_Piled = Fraction_Gross_Residues_That_Are_Piled,
+               Fraction_Scattered = Fraction_Gross_Residues_That_Are_Scattered) %>%
+        mutate(ID = as.integer(ID),
+               Silvicultural_Treatment = gsub(" ", "_", 
+                                              Silvicultural_Treatment),
+               Fraction_Piled = gsub("[%]", "", Fraction_Piled),
+               Fraction_Scattered = gsub("[%]", "", Fraction_Scattered),
+               Burn_Type = ifelse(Burn_Type == "No", "None", Burn_Type)) %>%
+        mutate(Silvicultural_Treatment = gsub("[%]", "", Silvicultural_Treatment)) 
+
+noaction <- data.frame(ID = c(max(scenarios$ID) + 1,
+                              max(scenarios$ID) + 2),
+                       Silvicultural_Treatment = rep("No_Action", 2),
+                       Fraction_Piled = rep("0", 2),
+                       Fraction_Scattered = rep("0", 2),
+                       Burn_Type = c("None", "Broadcast"),
+                       Biomass_Collection = rep("None", 2),
+                       Pulp_Market = rep("No", 2),
+                       stringsAsFactors = FALSE)
+
+scenarios <- bind_rows(scenarios, noaction)
+
+write_csv(scenarios, "data/SERC/scenarios.csv")
+```
+
+# Extract Biomass Fate Lookup Tables
+
+Creat a helper function that saves the scenario-specific biomass fate lookup tables after some minor munging to correct column names, etc.
+
+```{r}
+get_sections <- function(fraction_type, col_range) {
+        
+        section <- read_csv("data/SERC/Scenario_Matrix_v11_model-input.csv",
+                      col_names = FALSE)
+        
+        section_names <- as.character(section[1,])
+        
+        section <- section[-1, c(1:8, col_range)]
+        
+        names(section) <- section_names[c(1:8, col_range)]
+        
+        section <- section %>%
+                select(-contains("Bark"), -Stump, -Root) %>%
+                transmute(ID = as.integer(ID),
+                          Slope_Class = ifelse(Slope == "GT40", 80, 40),
+                          Silvicultural_Treatment = gsub(" ", "_", `Silvicultural Treatment`),
+                          Fraction_Piled = gsub("[%]", "",`Fraction Gross Residues That Are Piled`),
+                          Fraction_Scattered = gsub("[%]", "", `Fraction Gross Residues That Are Scattered`),
+                          Burn_Type = ifelse(`Burn Type` == "No", "None", `Burn Type`),
+                          Biomass_Collection = `Biomass Collection`,
+                          Pulp_Market = `Pulp Market`,
+                          Stem_ge9 = as.numeric(gsub("[%]", "", `Stem 9+`))/100,
+                          Stem_6t9 = as.numeric(gsub("[%]", "", `Stem 6-9`))/100,
+                          Stem_4t6 = as.numeric(gsub("[%]", "", `Stem 4-6`))/100,
+                          Branch = as.numeric(gsub("[%]", "", Branch))/100,
+                          Foliage = as.numeric(gsub("[%]", "", Foliage))/100) %>%
+                add_row(ID = rep(c(703, 704), 2),
+                        Slope_Class = rep(c(40, 80), each = 2),
+                        Silvicultural_Treatment = rep("No_Action", 4),
+                        Fraction_Piled = rep("0", 4),
+                        Fraction_Scattered = rep("0", 4),
+                        Burn_Type = rep(c("None", "Broadcast"), 2),
+                        Biomass_Collection = rep("None", 4),
+                        Pulp_Market = rep("No", 4),
+                        Stem_ge9 = rep(0.0, 4),
+                        Stem_6t9 = rep(0.0, 4),
+                        Stem_4t6 = rep(0.0, 4),
+                        Branch = rep(0.0, 4),
+                        Foliage = rep(0.0, 4)) %>%
+                mutate(Silvicultural_Treatment = gsub("[%]", "", Silvicultural_Treatment))
+        
+        write_csv(section, paste0("data/SERC/lookup_tables/", fraction_type, ".csv"))
+
+}
+```
+
+Create lists for fraction type and cell range.
+
+```{r}
+type_list <- list("recovered_by_size",
+                  "harvested_biomass",
+                  "piled_fuels",
+                  "scattered_in_field")
+
+range_list <- list(9:19,
+                   20:30,
+                   31:41,
+                   42:52)
+```
+
+Iterate the function over the two lists.
+
+```{r results=FALSE, message=FALSE}
+map2(type_list, range_list, function(x, y) get_sections(x, y)) 
+```
+
