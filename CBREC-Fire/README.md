@@ -3,7 +3,9 @@
 
 # Wildfire and RX Burn Emissions Module
 
-Calculate wildfire and RX burn emissions under different silvacultural treatments and biomass utilization scenarios for the [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec). This model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
+This module is part of the [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec). The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
+
+This module calculates wildfire and RX burn emissions under different silvacultural treatments and biomass utilization scenarios. Outputs from this module are used as inputs to the C-BREC LCA Module.
 
 ## Installation
 
@@ -11,7 +13,7 @@ Download or fork the repository from [github.com/SchatzCenter/CBREC](https://git
 
 ## File Structure
 
-The file structure is shown in the following tree. 
+The file structure for the Wildfire and RX burn Emissions Module is shown in the following tree. 
 
 ```
 CBIP                              # main project directory
