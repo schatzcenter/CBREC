@@ -250,7 +250,7 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
     
   # sourcing this function within the future
   # otherwise there are issues with the 'setgeneric' method
-  source("CBREC/functions/rasterDataTable.R") # script to optimize converting rasters to data.table
+  source("CBREC-LCA/functions/rasterDataTable.R") # script to optimize converting rasters to data.table
 
   # ****************************************************************************************************
   # Spatial data preparation
@@ -921,15 +921,3 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
 # Log model run time and close log file
 cat(paste0("Model Run Time: ", as.character(toc())), file = log_file, append = T)
 close(log_file)
-
-# NOTE: There have been some NULL returns from the timber harvests.
-# When this happens a single R session halts as it causes and error in the model
-# The other R sessions continue until they finish or hit an error.
-# This is a problem because you may want to restart with the full number of cores (ex. as I write this only 3 cores have not hit an error)
-# To end the PID R sessions use the function:
-# source("CBREC1.0/killSession.R")
-# killSessions()
-
-# Restart the R studio session and restart the model without the polygons that have been already run
-# rm(list = ls())
-# rstudioapi::restartSession()
