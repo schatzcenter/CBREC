@@ -144,10 +144,6 @@ option_list <<- list(
               type="integer", 
               default=parallel::detectCores()/2, 
               help="Specify number of CPU cores to utilize [default %default]"),
-  make_option(c("-t","--timestep"), 
-              type="integer", 
-              default=1, 
-              help="Specify time interval in years as one of the following: 1, 2, 5, 10, 20, 25, 50 [default %default]"),
   make_option(c("-u","--useactivitycodes"), 
               action="store_true", 
               default=F, 
@@ -163,7 +159,6 @@ if(interactive()){ # Manually set input arguments if running R interactively vs.
   input_args$infile <- 'CBREC-LCA/input/CBREC-LCA_input_filepaths.csv'
   input_args$debug <- F
   input_args$cores <- 28
-  input_args$timestep <- 1
   input_args$useactivitycodes <- F
   input_args$outdir <- "CBREC-LCA/output/default-output-dir/"
 }else{
@@ -175,10 +170,6 @@ if(interactive()){ # Manually set input arguments if running R interactively vs.
 user_input_filepath <<- input_args$infile
 debug_CBREC <<- input_args$debug
 plan(multiprocess, workers = input_args$cores) # Set future plan; will use multicore when available
-time_int <<- input_args$timestep # Time step in years. Must be one of the following numbers that 100 can be evenly divided by: 1, 2, 5, 10, 20, 25, 50
-if(time_int %notin% c(1,2,5,10,20,25,50)) {
-  stop(paste0("Time step value of ",as.character(time_int)," is invalid. Please specify one of the following values: 1, 2, 5, 10, 20, 25, 50."))
-}
 use_timber_harvest_treatments <<- input_args$useactivitycodes # State whether you want to apply a treatment code within project_polygons_filepath shapefile if it contains one
 out_folder <<- input_args$outdir # Specify output directory that will store results and logs
 if(!dir.exists(out_folder)) {
@@ -508,25 +499,12 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
 
     }
 
-    # Set time step using time_int specified by user
-    if(time_int != 1){
-      # year.loop <- c(1,seq(time_int,100,time_int))
-      # ARH update 8/21/2020: Code fix to stop issue of foliage fully decaying before transition to duff as a result of 
-      # a large time step; the first X number of years to the time step will be run at a 1 year resolution.
-      year.loop <- c(1:(time_int-1),seq(time_int,100,time_int))
-      } 
-    if(time_int == 1){
-      year.loop <- seq(1,100,1) 
-    }
-    
     # Run Loop for each year ---------------------------------------------------------------------------
-    for (year.i in year.loop) {
+    for (year.i in seq(1,100,1)) {
       
       # figure out the data table row num year.i will be on
       # ARH update 8/21/20: This also changed.
-      if(time_int != 1){
-        ifelse(year.i < time_int, dt_rn <- year.i, dt_rn <- year.i/time_int + 4) # for non-one-year interval
-      } else (dt_rn <- year.i) # for one-year interval, year is the row number
+      dt_rn <- year.i # for one-year interval, year is the row number
       
       # Calculate amount of scattered and piled residues at the beginning of the year
       results_tracker$postTreatment[dt_rn,':='(
