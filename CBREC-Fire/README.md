@@ -3,47 +3,39 @@
 
 # Wildfire and RX Burn Emissions Module
 
-Calculate wildfire and RX burn emissions under different silvacultural treatments and biomass utilization scenarios for the California Biomass Residue Emissions Characterization (C-BREC) Tool. This tool is part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this project can be found at [github.com/SchatzCenter/C-BREC_Fire](https://github.com/SchatzCenter/C-BREC_Fire).
+Calculate wildfire and RX burn emissions under different silvacultural treatments and biomass utilization scenarios for the [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec). This model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
 
 ## Installation
 
-Download or fork the repository from [github.com/SchatzCenter/C-BREC_Fire](https://github.com/SchatzCenter/C-BREC_Fire). 
+Download or fork the repository from [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC). 
 
 ## File Structure
 
 The file structure is shown in the following tree. 
 
 ```
-CBIP                            # main project directory
-+-- CBIP.Rproj                  # r-project file
-+-- README.html                 # readme
-+-- Consume4_2                  # original Consume source code
-+-- data                        # main data directory 
-|   +-- FCCS                    # FCCS fuels data
-|   +-- GAP                     # Landcover class data
-|   +-- GEE                     # Google Earth Engine data
-|   +-- Other                   # directory for misc. data sets
-|   +-- UW                      # UW data directory
-|   +-- Tiles                   # Tile shapefiles, tiled input and output data
-|                                 sets
-|   +-- SERC                    # Scenario matrix, and associated lookup tables
-|   +-- Post_process            # Output of post processing of results
-+-- scripts                     # main script directory
-|   +-- Charcoal                # script that generates linear fit coefficients
-|                                 for char production from scattered material
-|   +-- downsample              # scripts exploring potential for spatial downsampling
-|   +-- Consume                 # consume, r version
-|   +-- FCCS                    # existing fuelbed processing
-|   +-- GAP                     # landcover classification
-|   +-- GEE                     # Google earth engine data processing
-|   +-- Other                   # misc. scripts
-|   +-- emissions_model         # core scripts for the emissions model excluding
-|                                 consumption/emissions scripts
-|   +-- post_process            # scripts for post-processing results
-|   +-- scenarios               # scripts for generating lookup tables from scenario matrix
-|   +-- Test                    # scratch and testing scripts
-|   +-- UW                      # residue data processing 
-+-- figures                     # figures
+CBIP                              # main project directory
++-- functions                     # core functions
+|   +-- Consume                   # R translation of subset of Consume 4.2 functions
++-- input                         # main input data directory 
+|   +-- FCCS                      # FCCS fuels data
+|   +-- lookup_tables             # .csv files that define, for each case, the decimal
+|                                   fraction of residues that exist as scattered and piled
+|   +-- residue                   # .csv files that contain the total mass of residues, in
+|                                   U.S. tons per acre, for each silvacultural treatment and
+|                                   FCID raster cell, disaggregated by tree component.
+|   +-- tiles                     # contains shape file that spatially breaks up the state of
+|                                   California into tiles. C-BREC Fire parallelizes over these,
+|                                   and generates results disaggregated by tile.
+|      +-- tabulated_spatial_data # Contains .rds files for each tile ID in the tile shape file.
+|                                   Each .rds file contains wind correction factors, decay
+|                                   constants, and fuel moisture by size class for each FCID
+|                                   raster cell.
++-- output                        # stores model outputs
+|   +-- emissions                 # stores emissions data used by CBREC-LCA
+|   +-- residual_fuels            # stores mass of residuel fuels for additional results reporting.
++-- README.md                     # readme
++-- run_CBREC-Fire.R              # main program script
 ```
 
 ## Prerequisites
