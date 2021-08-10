@@ -3,7 +3,7 @@
 
 ## Wildfire and RX Burn Emissions Module
 
-This module is part of the [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec). The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
+This module is part of the [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec). Additional methodological documentation can be found on the C-BREC Model website. The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
 
 This module calculates wildfire and RX burn emissions under different silvacultural treatments and biomass utilization scenarios. Outputs from this module are used as inputs to the Life Cycle Assessment Module.
 
@@ -42,7 +42,7 @@ CBIP                              # main project directory
 
 ### Prerequisites
 
-This project was written in R using the Rstudio project framework. Occasionally, the existing Consume functions (written in Python) were used for testing, primarily through the rstudio interface with the reticulate package, though jupyter notebooks were also employed.
+This project was written in R using the Rstudio project framework.
 
 #### Software requirements
 
@@ -54,10 +54,10 @@ To run the main scenario_emissions function, the following is required:
         - future.apply 
         - data.table
         - sf 
-* The CBIP Rstudio project folder, including data.
-* At least 2GB storage per tile. [^1]
-
-[^1]: This has not been thoroughly tested for all possible tiles. More storage is better.
+* The CBREC Rstudio project folder, including CBREC-Fire and associated input.
+* At least 24 logical CPU cores at >2GHz each for a reasonable run time, more is better.
+* At least 64GB RAM, more is required for higher CPU core count.
+* At least 3TB storage. This has not been thoroughly tested. More storage is better.
         
 Packages can be installed as follows:
 
@@ -65,13 +65,13 @@ Packages can be installed as follows:
 install.packages("data.table")
 ```
 
-Other packages and software are required to reproduce the entire project, inlcuding python, Consume 4.2, Google Earth Engine, and many other r packages. Packages were loaded at the beginning of every script where possible. All scripts have a description header.
+Other packages and software are required to reproduce the entire project. Packages are loaded at the beginning of every script where possible. All scripts have a description header.
 
 ### Summary Overview
 
 The process for calculating the consumption and emissions for a single tile over 5 timesteps (0, 25, 50, 75, and 100) is shown below. 
 
-1. The scenario lookup table is loaded. The following steps are run for each scenario.
+1. The case lookup table is loaded. The following steps are run for each case.
 
 2. The FCCS fuelbed, residue, and spatial attributes data are loaded and joined into a single data.table.
 
@@ -91,34 +91,35 @@ The process for calculating the consumption and emissions for a single tile over
 
 ### Usage
 
-This project is in the Rstudio project format, so all scripts must be sourced relative to the main CBIP folder. The steps to calculate emissions for a single tile are shown below. In this example, emissions and residual (unconsumed) fuel are estimated for a fixed set of scenarios over five time steps over a 100-year period for tile number 300. For ease of use when running on multiple tiles, the run_all function wraps the scenario_emissions function, which in turn wraps all other functions. For efficiency, the scenario_emissions function impliments parrallel processing using the future.apply package, which is platform independent. 
+This project is in the Rstudio project format, so all scripts must be sourced relative to the main CBREC folder. The steps to calculate emissions for a single tile are shown below. In this example, emissions and residual (unconsumed) fuel are estimated for a fixed set of scenarios over five time steps over a 100-year period for tile number 300. For ease of use when running on multiple tiles, the run_all function wraps the scenario_emissions function, which in turn wraps all other functions. For efficiency, the scenario_emissions function implements parallel processing using the future.apply package, which is platform independent. 
 
 ```
-source("scripts/emissions_model/run_all.R")
+source("CBREC-Fire/run_CBREC-Fire.R")
 
 run_all(300)
 ```
 
-Tile number must match one of the ID numbers of the tiles located in "data/Tiles/clipped_tiles/clipped_tiles.shp". There are 11,990 tiles, each of which is approximately ~2669 hectares in size. The tile ID numbers can be extracted using the following snippet:
+Tile number must match one of the ID numbers of the tiles located in "CBREC-Fire/input/tiles/cbrec-fire-tiles.shp". There are 11,990 tiles, each of which is approximately ~2669 hectares in size. The tile ID numbers can be extracted using the following snippet:
 
 ```
-tiles <- sf::st_read("data/Tiles/clipped_tiles/clipped_tiles.shp")
+tiles <- sf::st_read("CBREC-Fire/input/tiles/cbrec-fire-tiles.shp")
 tiles$ID
 ```
 
-All outputs are saved to the "data/Tiles/output" folder as data.tables in .rds format. The subfolder "emissions" contains wildfire emissions estimates, the subfolder "residual_fuels" contains the residual fuels data. Each tile has scenario-specific outputs stored in a folder named for the tile number. The following code demonstrates how to access the results.
+All outputs are saved to the "CBREC-Fire/output" folder as data.tables in .rds format. The subfolder "emissions" contains wildfire emissions estimates, the subfolder "residual_fuels" contains the residual fuels data. Each tile has case-specific outputs stored in a folder named for the tile number. The following code demonstrates how to access the results.
 
 ```
-emissions <- readRDS("data/Tiles/output/emissions/300/20_Proportional_Thin-None-70-30-first-No-No-49-300-0.rds")
+emissions <- readRDS("CBREC-Fire/output/emissions/300/20_Proportional_Thin-None-70-30-first-No-No-49-300-0.rds")
 
-residual_fuels <- readRDS("data/Tiles/output/residual_fuels/300/20_Proportional_Thin-None-70-30-first-No-No-49-300-0.rds")
+residual_fuels <- readRDS("CBREC-Fire/output/residual_fuels/300/20_Proportional_Thin-None-70-30-first-No-No-49-300-0.rds")
 ```
 
 The run_all function can run any number of the tiles. The run_all function has an optional argument t_range, which is a integer vector or sequence of tile ID numbers. The default is NULL, which runs all tiles. WARNING: This takes quite a while to run, and requires a lot of disk space. There is a second argument save_runtime, which defaults to TRUE. This saves an .rds file with the runtime, "run_time.rds", in the main project directory.
 
 ```
+source("CBREC-Fire/run_CBREC-Fire.R")
+
 # runs all tiles
-source("scripts/emissions_model/run_all.R")
 run_all()
 
 # run first 100 tiles from Rstudio
@@ -126,7 +127,7 @@ run_all(t_range = 1:100)
 ```
 ### What it does
 
-The scenario_emissions function sourced by run_all estimates fuel consumption, emissions, and residual fuels for all  of the 704 fixed scenarios. The individual scenarios are stored in a .csv file which can be accessed at "data/SERC/scenarios.csv".
+The scenario_emissions function sourced by run_all estimates fuel consumption, emissions, and residual fuels for all of the specified fixed cases. The individual cases to run are specified in "common-inputs/cases-to-run.csv". All cases are defined in "common-inputs/case-definitions.csv".
 
 The function loads pre-processed spatial attributes that have been converted from raster to a tabular format with x-y location indicator columns. All spatial data use the California (Teale) Albers projetion. The CRS is below:
 
@@ -138,7 +139,7 @@ CRS arguments:
 
 The existing fuelbed and treatment residue data are then appended to the spatial attribute data using FCCS and updated GNN FCID identifiers. The post-treatment fuelbed is then created by adding the treatment residue to the exisiting fuelbed using proportions assigned for each scenario. Residues are added as piled fuels or scattered fuels by fuel size class, accounting for decau. Burns are simulated on the updated fuelbeds at 25-year increments over a 100-year period for a total of five model runs in each wildfire scenario and six in the RX treatment scenarios. Both the emissions and residual fuels (treatment residue only) are saved following each simulation. Wildfire simulations assume that no previous wildfire has occurred. For scenarios that include an RX burn, the RX burn occurs at year 0, and all subsequent burns are modeled as wildfires that occur on 25-year timesteps from 0-100 years after the treatment. With the exception of the wildfire immediately following the RX treatment, these follow-up wildfires are simulated using the remaining treatment residue that has been added to a "recovered" fuelbed. Treatment residues are updated to reflect mass loss from decay prior to burning for all cases.
 
-To estimate emissions, all consumed mass is multiplied by phase-specific (flaming, smoldering, and residual) FEPs emissons factors, which are taken from the [Bluesky modeling framework](https://github.com/pnwairfire/eflookup/blob/master/eflookup/fepsef.py). Char production is also modeled. All mass converted to char is assumed to come from unconsumed fuel. The model output is then split into seperate data.tables containing residual fuels and emissions estimates and is saved as .rds files.
+To estimate emissions, all consumed mass is multiplied by phase-specific (flaming, smoldering, and residual) FEPs emissons factors, which are taken from the [Bluesky modeling framework](https://github.com/pnwairfire/eflookup/blob/master/eflookup/fepsef.py) and from [Consume 4.2](https://www.fs.fed.us/pnw/fera/fft/consumemodule.shtml). Char production is also modeled as documented in the [C-BREC Model Framework](https://schatzcenter.org/cbrec). All mass converted to char is assumed to come from unconsumed fuel. The model output is then split into separate data.tables containing residual fuels and emissions estimates and is saved as .rds files.
 
 ### Output description
 
@@ -148,10 +149,10 @@ The scenario_emissions function saves two output files for each scenario:
 
 2. residual_fuels - this is the remaining residue for each fuelbed in the tile.
 
-These are saved as .rds files in folders of the same name located in data/Tiles/output. File naming convention is folders for output type (emissions or residual fuels) and tile number, then silvicultural treatment, type of burn, fraction of residues piled and scatterd, whether the burn was a secondary burn following an RX treatment, whether biomass was collected for utilization, the existence of a pulp market, tile number, and year. File paths have "-" seperation. An example:
+These are saved as .rds files in folders of the same name located in "CBREC-Fire/output". File naming convention is folders for output type (emissions or residual fuels) and tile number, then silvicultural treatment, type of burn, fraction of residues piled and scattered, whether the burn was a secondary burn from wildfire following an RX treatment, whether biomass was collected for utilization, the existence of a pulp market, tile number, and year. File paths have "-" seperation. An example:
 
 ```
-"data/Tiles/output/emissions/300/20_Proportional_Thin-None-70-30-first-No-No-49-300-0.rds"
+"CBREC-Fire/output/emissions/300/20_Proportional_Thin-None-70-30-first-No-No-49-300-0.rds"
 ```                                    
 
 The specifics in the above example are described in the table below.
@@ -292,15 +293,15 @@ The residual fuels table has the following columns. All residual fuels are in gr
 
 ### Versioning
 
-We use [git](https://git-scm.com/) for version control on this project. For a complete history, see the [this repository](https://github.com/SchatzCenter/C-BREC_Fire). 
+We use [git](https://git-scm.com/) for version control on this project. For a complete history, see the [this repository](https://github.com/SchatzCenter/CBREC). 
 
 ## Authors
 
-* Micah Wright (Original Author)  - [Github](https://github.com/wrightmicahc)
-* Jeff Kane (Corresponding Author) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/people/jeffrey-kane)
-* Andy Harris - [Schatz Energy Research Center](https://schatzcenter.or)
-* Max Blasdel - [Schatz Energy Research Center](https://schatzcenter.or)
-* Jerome Carman - [Schatz Energy Research Center](https://schatzcenter.or)
+* [Micah Wright](https://github.com/wrightmicahc) (Lead Author) - 
+* [Jeff Kane](https://fwr.humboldt.edu/people/jeffrey-kane) (Corresponding Author) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/)
+* Andy Harris - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Max Blasdel](https://github.com/mxblsdl) - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Jerome Qiriazi](https://github.com/jqiriazi) (Project Manager) - [Schatz Energy Research Center](https://schatzcenter.org)
 
 ### Acknowledgments
 
