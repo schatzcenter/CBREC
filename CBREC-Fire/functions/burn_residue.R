@@ -10,9 +10,9 @@
 ################################################################################
 
 # source functions that calculate consumption and emissions
-source("scripts/Consume/con_calc_activity_fast.R")
-source("scripts/Consume/calc_emissions.R")
-source("scripts/emissions_model/remove_rx_consumed.R")
+source("CBREC-Fire/functions/Consume/con_calc_activity_fast.R")
+source("CBREC-Fire/functions/Consume/calc_emissions.R")
+source("CBREC-Fire/functions/remove_rx_consumed.R")
 
 burn_residue <- function(dt, burn_type) {
         

@@ -14,10 +14,10 @@ run_all <- function(t_range = NULL, save_runtime = TRUE) {
         library(sf)
         
         # source the scenario_emissions function
-        source("scripts/emissions_model/scenario_emissions.R")
+        source("CBREC-Fire/functions/scenario_emissions.R")
         
         # load tile shapefile
-        tiles <- st_read("data/Tiles/clipped_tiles/clipped_tiles.shp",
+        tiles <- st_read("CBREC-Fire/input/tiles/cbrec-fire-tiles.shp",
                          quiet = TRUE)
         
         # get the tile id numbers
@@ -36,7 +36,7 @@ run_all <- function(t_range = NULL, save_runtime = TRUE) {
                 run_time <- system.time(lapply(tile_nums[t_range], function(x) try(scenario_emissions(x))))
         }
         
-        saveRDS(run_time, "run_time.rds")
+        saveRDS(run_time, "CBREC-Fire/output/runtime/run_time.rds")
         
 }
 

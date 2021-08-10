@@ -87,17 +87,17 @@ suppressPackageStartupMessages(c(library("optparse"), # command line interface f
                                  library('tictoc'))) # time testing package; very simple
 
 # Source modules and helper functions -------------------
-source("CBREC/functions/harvest-processing.R")
-source("CBREC/functions/prescribed-burn-functions.R")
-source("CBREC/functions/decay-functions.R")
-source('CBREC/functions/wildfire-functions.R')
-source('CBREC/functions/power-plant-functions.R')
-source("CBREC/functions/misc-functions.R")
-source("CBREC/functions/natural-gas.R") # emissions factors for NG
-source("CBREC/functions/rasterDataTable.R") # script to optimize converting rasters to data.table
-source("CBREC/functions/load-shapefile.R") # loads shapefiles from a specified folder
-source("CBREC/functions/updateYearZero.R") # applies harvest operation values to all year zero scenarios
-source("CBREC/functions/blackCarbon.R")
+source("CBREC-LCA/functions/blackCarbon.R")
+source("CBREC-LCA/functions/decay-functions.R")
+source("CBREC-LCA/functions/harvest-processing.R")
+source("CBREC-LCA/functions/load-shapefile.R") # loads shapefiles from a specified folder
+source("CBREC-LCA/functions/misc-functions.R")
+source("CBREC-LCA/functions/natural-gas.R") # emissions factors for NG
+source('CBREC-LCA/functions/power-plant-functions.R')
+source("CBREC-LCA/functions/prescribed-burn-functions.R")
+source("CBREC-LCA/functions/rasterDataTable.R") # script to optimize converting rasters to data.table
+source("CBREC-LCA/functions/updateYearZero.R") # applies harvest operation values to all year zero scenarios
+source('CBREC-LCA/functions/wildfire-functions.R')
 
 # Define dataframe and raster data tables
 if (!isGeneric("as.data.table")) {
@@ -108,7 +108,7 @@ setMethod('as.data.table', signature(x='data.frame'), data.table::as.data.table)
 setMethod('as.data.table', signature(x='Raster'), as.data.table.raster)
 
 # Constants ----------------------------------------------
-source("CBREC/functions/constants.R")
+source("CBREC-LCA/functions/constants.R")
 
 ##############################################
 ####       USER DEFINED VARIABLES        ####
@@ -118,8 +118,8 @@ source("CBREC/functions/constants.R")
 seed_val_to_set <- 2 # So sample() produces same result so multiple runs can be compared
 
 # tiles with no fire data that will cause an error
-no_data_tiles <<- gsub(paste0(getwd(),"/CBREC_input_data/fire_emissions/"),"",
-                       system(paste0("find ",getwd(),"/CBREC_input_data/fire_emissions/ -type d -empty"), intern=T))
+no_data_tiles <<- gsub(paste0(getwd(),"CBREC-Fire/output/emissions/"),"",
+                       system(paste0("find ",getwd(),"CBREC-Fire/output/emissions/ -type d -empty"), intern=T))
 
 # general options
 options(stringsAsFactors = F)
@@ -133,7 +133,7 @@ option_list <<- list(
               help="Print extra output [default %default]"),
   make_option(c("-i", "--infile"), 
               type="character", 
-              default='CBREC_input_data/cbrec_inputs_2020-09_statewide.csv', 
+              default='CBREC-LCA/input/CBREC-LCA_input_filepaths.csv', 
               help="CSV file specifying user inputs [default \"%default\"]",
               metavar="input-file"),
   make_option(c("-d", "--debug"), 
@@ -154,18 +154,18 @@ option_list <<- list(
               help="If running project polygons with specified treatment activity codes that you want to use, indicate this as TRUE [default %default]"),
   make_option(c("-o","--outdir"), 
               type="character", 
-              default="CBREC_output/statewide_ecosections/", 
+              default="CBREC-LCA/output/default-output-dir/", 
               help="Specify absolute or relative output directory path [default %default]")
 )
 if(interactive()){ # Manually set input arguments if running R interactively vs. command line
   input_args <<- parse_args(OptionParser(option_list = option_list))
   input_args$verbose <- F
-  input_args$infile <- 'CBREC_input_data/cbrec_inputs_2020-09_statewide.csv'
+  input_args$infile <- 'CBREC-LCA/input/CBREC-LCA_input_filepaths.csv'
   input_args$debug <- F
   input_args$cores <- 28
   input_args$timestep <- 1
   input_args$useactivitycodes <- F
-  input_args$outdir <- "CBREC_output/statewide_ecosections/"
+  input_args$outdir <- "CBREC-LCA/output/default-output-dir/"
 }else{
   input_args <<- parse_args(OptionParser(option_list = option_list))
   if(!file.exists(input_args$infile)) {

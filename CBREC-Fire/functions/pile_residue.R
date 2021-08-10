@@ -20,7 +20,7 @@ piled_k_const <- function(k_const, coEf = 0.721, per_ag = .892, per_gc = .108) {
 pile_residue <- function(dt, timestep) {
 
         # load the lookup table for piled fuels
-        lookup_pile <- fread("data/SERC/lookup_tables/limited-cases/piled_fuels.csv", 
+        lookup_pile <- fread("CBREC-Fire/input/lookup_tables/piled_fuels.csv", 
                                 verbose = FALSE)
         
         # merge lookup and dt

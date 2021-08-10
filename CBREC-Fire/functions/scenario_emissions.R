@@ -9,29 +9,29 @@
 ################################################################################
 
 # source function that loads and merges FCCS fuelbed, biomass residue, and 
-# location attribute data 
-source("scripts/emissions_model/load_data.R")
-
-# source function that corrects midflame windspeed
-source("scripts/emissions_model/wind_correction.R")
-
-# source function that assigns appropriate residue into piled mass
-source("scripts/emissions_model/pile_residue.R")
-
 # source function that adds scattered residue to FCCS fuelbeds
-source("scripts/emissions_model/add_residue.R")
-
-# source decay functions
-source("scripts/emissions_model/decay_residue.R")
-
-# source wrapper function for consumption and emissions functions
-source("scripts/emissions_model/burn_residue.R")
+source("CBREC-Fire/functions/add_residue.R")
 
 # source function for adding rx residues back to recovered fuelbed
-source("scripts/emissions_model/add_rx_residue.R")
+source("CBREC-Fire/functions/add_rx_residue.R")
+
+# source wrapper function for consumption and emissions functions
+source("CBREC-Fire/functions/burn_residue.R")
+
+# source decay functions
+source("CBREC-Fire/functions/decay_residue.R")
+
+# location attribute data 
+source("CBREC-Fire/functions/load_data.R")
+
+# source function that assigns appropriate residue into piled mass
+source("CBREC-Fire/functions/pile_residue.R")
 
 # source function for saving model output
-source("scripts/emissions_model/save_output.R")
+source("CBREC-Fire/functions/save_output.R")
+
+# source function that corrects midflame windspeed
+source("CBREC-Fire/functions/wind_correction.R")
 
 # load parallel processing package, wrapper for os agnostic future package
 library(future.apply)
@@ -41,8 +41,8 @@ library(data.table)
 scenario_emissions <- function(tile_number) {
         
         # create output tile folders if missing
-        em_path <- "data/Tiles/output/emissions/"
-        res_path <- "data/Tiles/output/residual_fuels/"
+        em_path <- "CBREC-Fire/output/emissions/"
+        res_path <- "CBREC-Fire/output/residual_fuels/"
         
         lapply(c(em_path, res_path), function(x) {
                 
@@ -52,7 +52,7 @@ scenario_emissions <- function(tile_number) {
         })
         
         # load scenarios
-        scenarios <- fread("data/SERC/lookup_tables/limited-cases/scenarios_limited.csv", # change back to SERC/scenarios.csv to run all scenarios
+        scenarios <- fread("common-inputs/case_definitions/cases-to-run.csv",
                            verbose = FALSE)
         
         setkey(scenarios, Silvicultural_Treatment)
