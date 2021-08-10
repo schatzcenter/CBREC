@@ -1,17 +1,17 @@
-**California Biomass Residue Emissions Characterization (C-BREC) Tool**
+**California Biomass Residue Emissions Characterization (C-BREC) Model**
 ===================================================================
 
-# Wildfire and RX Burn Emissions Module
+## Wildfire and RX Burn Emissions Module
 
 This module is part of the [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec). The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
 
-This module calculates wildfire and RX burn emissions under different silvacultural treatments and biomass utilization scenarios. Outputs from this module are used as inputs to the C-BREC LCA Module.
+This module calculates wildfire and RX burn emissions under different silvacultural treatments and biomass utilization scenarios. Outputs from this module are used as inputs to the Life Cycle Assessment Module.
 
-## Installation
+### Installation
 
 Download or fork the repository from [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC). 
 
-## File Structure
+### File Structure
 
 The file structure for the Wildfire and RX burn Emissions Module is shown in the following tree. 
 
@@ -34,17 +34,17 @@ CBIP                              # main project directory
 |                                   constants, and fuel moisture by size class for each FCID
 |                                   raster cell.
 +-- output                        # stores model outputs
-|   +-- emissions                 # stores emissions data used by CBREC-LCA
+|   +-- emissions                 # stores emissions data used by the Life Cycle Assessment Module.
 |   +-- residual_fuels            # stores mass of residuel fuels for additional results reporting.
 +-- README.md                     # readme
 +-- run_CBREC-Fire.R              # main program script
 ```
 
-## Prerequisites
+### Prerequisites
 
 This project was written in R using the Rstudio project framework. Occasionally, the existing Consume functions (written in Python) were used for testing, primarily through the rstudio interface with the reticulate package, though jupyter notebooks were also employed.
 
-### Software requirements
+#### Software requirements
 
 To run the main scenario_emissions function, the following is required:
 
@@ -67,7 +67,7 @@ install.packages("data.table")
 
 Other packages and software are required to reproduce the entire project, inlcuding python, Consume 4.2, Google Earth Engine, and many other r packages. Packages were loaded at the beginning of every script where possible. All scripts have a description header.
 
-## Summary Overview
+### Summary Overview
 
 The process for calculating the consumption and emissions for a single tile over 5 timesteps (0, 25, 50, 75, and 100) is shown below. 
 
@@ -89,7 +89,7 @@ The process for calculating the consumption and emissions for a single tile over
 
 9. Output emissions and residual fuels are saved as .rds files, mass units are grams per acre.
 
-## Usage
+### Usage
 
 This project is in the Rstudio project format, so all scripts must be sourced relative to the main CBIP folder. The steps to calculate emissions for a single tile are shown below. In this example, emissions and residual (unconsumed) fuel are estimated for a fixed set of scenarios over five time steps over a 100-year period for tile number 300. For ease of use when running on multiple tiles, the run_all function wraps the scenario_emissions function, which in turn wraps all other functions. For efficiency, the scenario_emissions function impliments parrallel processing using the future.apply package, which is platform independent. 
 
@@ -124,7 +124,7 @@ run_all()
 # run first 100 tiles from Rstudio
 run_all(t_range = 1:100)
 ```
-## What it does
+### What it does
 
 The scenario_emissions function sourced by run_all estimates fuel consumption, emissions, and residual fuels for all  of the 704 fixed scenarios. The individual scenarios are stored in a .csv file which can be accessed at "data/SERC/scenarios.csv".
 
@@ -140,7 +140,7 @@ The existing fuelbed and treatment residue data are then appended to the spatial
 
 To estimate emissions, all consumed mass is multiplied by phase-specific (flaming, smoldering, and residual) FEPs emissons factors, which are taken from the [Bluesky modeling framework](https://github.com/pnwairfire/eflookup/blob/master/eflookup/fepsef.py). Char production is also modeled. All mass converted to char is assumed to come from unconsumed fuel. The model output is then split into seperate data.tables containing residual fuels and emissions estimates and is saved as .rds files.
 
-## Output description
+### Output description
 
 The scenario_emissions function saves two output files for each scenario:
 
@@ -169,7 +169,7 @@ The specifics in the above example are described in the table below.
 |        9|300                  |tile_number             |Tile ID number                                                               |
 |       10|0                    |year                    |Year in the 100 year sequence                                                |
 
-### Emissions
+#### Emissions
 
 The emissions table has the following columns. All mass outputs are in grams/acre, and are for the specified year / burn only (no values are cumulative). All masses are associated with the residues only (do not include the fuel bed), unless otherwise noted.
 
@@ -253,7 +253,7 @@ The emissions table has the following columns. All mass outputs are in grams/acr
 |total_fwd_residue_VOC       |VOC produced by scattered residue fine woody debris (1-3") in grams/acre.
 |total_cwd_residue_VOC       |VOC produced by scattered residue coarse woody debris (>3") in grams/acre
 
-### Residual Fuels
+#### Residual Fuels
 
 The residual fuels table has the following columns. All residual fuels are in grams/acre.
 
@@ -290,18 +290,20 @@ The residual fuels table has the following columns. All residual fuels are in gr
 |pile_field               |Field-piled residue of all size classes, in grams/acre.
 |pile_landing             |Landing-piled residue of all size classes, in grams/acre.
 
-## Versioning
+### Versioning
 
 We use [git](https://git-scm.com/) for version control on this project. For a complete history, see the [this repository](https://github.com/SchatzCenter/C-BREC_Fire). 
 
 ## Authors
 
 * Micah Wright (Original Author)  - [Github](https://github.com/wrightmicahc)
-* Jeff Kane
-* Andy Harris
-* Max Blasdel
-* Jerome Carman
+* Jeff Kane (Corresponding Author) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/people/jeffrey-kane)
+* Andy Harris - [Schatz Energy Research Center](https://schatzcenter.or)
+* Max Blasdel - [Schatz Energy Research Center](https://schatzcenter.or)
+* Jerome Carman - [Schatz Energy Research Center](https://schatzcenter.or)
 
-## Acknowledgments
+### Acknowledgments
 
-* The R consume scripts were originally translated directly into R from the original python code from [Consume 4.2](https://www.fs.fed.us/pnw/fera/fft/consumemodule.shtml), a component of [Fuel and Fire Tools](https://www.fs.fed.us/pnw/fera/fft/index.shtml). 
+* The R consume scripts were originally translated directly into R from the original python code from [Consume 4.2](https://www.fs.fed.us/pnw/fera/fft/consumemodule.shtml), a component of [Fuel and Fire Tools](https://www.fs.fed.us/pnw/fera/fft/index.shtml).
+
+* This project was funded by the California Energy Commission's (CEC) Electric Program Investment Charge (EPIC) program under contract agreement EPC-16-047. DISCLAIMER: This source code was prepared as the result of work sponsored by the California Energy Commission. It does not necessarily represent the views of the CEC, its employees, or the State of California. The CEC, the State of California, its employees, contractors, and subcontractors make no warrant, express or implied, and assume no legal liability for the information in this report; nor does any party represent that the uses of this information will not infringe upon privately owned rights. This report has not been approved or disapproved by the California Energy Commission, nor has the California Energy Commission passed upon the accuracy or adequacy of the information in this report.
