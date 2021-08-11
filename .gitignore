@@ -1,3 +1,7 @@
+# git files
+.gitignore
+.gitattributes
+
 # History files
 .Rhistory
 .Rapp.history
