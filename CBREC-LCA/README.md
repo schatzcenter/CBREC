@@ -6,9 +6,11 @@
 This module is part of the [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec). Additional methodological documentation can be found on the C-BREC Model website. The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
 
 This module calculates life cycle gross and net
+
 * Greenhouse gas emissions
 * Climate impact metrics: global warming potential and global temperature potential
 * Criteria air pollutants
+
 under different silvacultural treatments and biomass utilization scenarios. This module allows specification of the following key characteristics at the individual project level:
 
 * Location of residue generation
