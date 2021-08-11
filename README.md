@@ -1,139 +1,84 @@
-## Outputs
-***
-### Output format
+**California Biomass Residue Emissions Characterization (C-BREC) Model**
+===================================================================
 
-The output structure is currently a single file for each polygon. The file has nested lists for each case. Each case has two lists of time series and year0 values. Year0 is further separated by the four processing emissions scenarios and the power plant outputs. The power plant outputs are run for the nearest power plant, which will vary spatially and four generic power plants of differing technologies. 
- 
+The [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec) is a life cycle assessment (LCA) framework specific to the use of California forest residues for electricity generation. It enables robust and transparent accounting of greenhouse gases and air pollutant emissions associated with residual woody biomass energy systems in California. The model allows specification of the following key characteristics at the individual project level:
+
+* Location of residue generation
+* Type of forest treatment or harvest activity being conducted
+* Baseline residue disposition (piled or scattered)
+* Location of residue utilization
+* Reference fate of unremoved biomass (prescribed burn or left in place)
+* Supply chain characteristics
+
+Additional methodological documentation can be found on the C-BREC Model website. The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
+
+## Installation
+
+Download or fork the repository from [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC). 
+
+## File Structure
+
+The file structure is shown in the following tree. 
+
 ```
-polygon_id
-+-- case_ID (as it relates to the scenario matrix)
-|   +-- treatment (year 0)
-|   |   -- field.residue.removed
-|   |   -- total.biomass.mobilized.tonnesAcre
-|   |   +-- CandP (collection and processing)
-|   |   |   +-- CandP_dry_grind
-|   |   |   +-- CandP_green_chip
-|   |   |   +-- CandP_green_grind
-|   |   |   +-- CandP_low
-|   |   +-- PP (power plant scenarios)
-|   |   |   +-- Nearest
-|   |   |   +-- CurrentGenCombustionPlantDefault
-|   |   |   +-- CurrentGenIG/CombustionPlantDefault
-|   |   |   +-- NextGenThermochemicalPlantDefault
-|   |   |   +-- LessThan1MWPlant
-|   |   +-- BroadcastBurn
-|   |   +-- PileBurn
-|   +-- postTreatment (100 year time series)
-+-- ...
+File structure to be filled in
 ```
 
-### postTreatment
-| Variable                           | Description                            |
-| ---------------------------------- | -------------------------------------- |
-| In.field.non.char.scattered_tonnes | Scattered residue mass                 |
-| In.field.non.char.piled_tonnes     | Piled residue mass                     |
-| In.field.char.scattered_tonnes     | Scattered charred mass                 |
-| In.field.char.piled_tonnes         | Piled charred mass                     |
-| wildfire.burned.residue_tonnes     | Mass lost specifically to wildfire     |
-| decayed.residue_tonnes             | Mass lost specifically to decay        |
-| wildfire.CO2_tonnes                | CO<sub>2</sub> emissions from wildfire |
-| wildfire.CO_tonnes                 | CO emissions from wildfire             |
-| wildfire.CH4_tonnes                | CH<sub>4</sub> emissions from wildfire |
-| wildfire.NOx_tonnes                | NO<sub>x</sub> emissions from wildfire |
-| wildfire.N2O_tonnes                | N<sub>2</sub> emissions from wildfire  |
-| wildfire.PMUnder10um_tonnes        | PM10 emissions from wildfire           |
-| wildfire.PMUnder2.5um_tonnes       | PM2.5 emissions from wildfire          |
-| wildfire.BC_tonnes                 | Black Carbon from wildfire             |
-| wildfire.SO2_tonnes                | SO<sub>2</sub> emissions from wildfire |
-| wildfire.VOC_tonnes                | VOC emissions from wildfire            |
-| decay.CO2_tonnes                   | CO<sub>2</sub> emissions from decay    |
-| decay.CH4_tonnes                   | CH<sub>4</sub> emissions from decay    |
+## Prerequisites
 
+This project was written in R using the Rstudio project framework.
 
-### CandP (collection and processing)
-***
- | Variable                                         | Description                                          |
- | ------------------------------------------------ | ---------------------------------------------------- |
- | collection.processing.diesel.CO2_tonnes          | CO<sub>2</sub> emissions from the collection process |
- | collection.processing.diesel.CO_tonnes           | CO emissions from the collection process             |
- | collection.processing.diesel.CH4_tonnes          | CH<sub>4</sub> emissions from the collection process |
- | collection.processing.diesel.NOx_tonnes          | NO<sub>x</sub> emissions from the collection process |
- | collection.processing.diesel.N2O_tonnes          | N<sub>2</sub> emissions from the collection process  |
- | collection.processing.diesel.PMUnder10um_tonnes  | PM10 emissions from the collection process           |
- | collection.processing.diesel.PMUnder2.5um_tonnes | PM2.5 emissions from the collection process          |
- | collection.processing.diesel.SO2_tonnes          | SO<sub>2</sub> emissions from the collection process |
- | collection.processing.diesel.VOC_tonnes          | VOC emissions from the collection process            |
- | transportation.diesel.CO2_tonnes                 | CO<sub>2</sub> emissions from residue mobilization   |
- | transportation.diesel.CO_tonnes                  | CO emissions from residue mobilization               |
- | transportation.diesel.CH4_tonnes                 | CH<sub>4</sub> emissions from residue mobilization   |
- | transportation.diesel.NOx_tonnes                 | NO<sub>x</sub> emissions from residue mobilization   |
- | transportation.diesel.N2O_tonnes                 | N<sub>2</sub> emissions from residue mobilization    |
- | transportation.diesel.PMUnder10um_tonnes         | PM10 emissions from residue mobilization             |
- | transportation.diesel.PMUnder2.5um_tonnes        | PM2.5 emissions from residue mobilization            |
- | transportation.diesel.SO2_tonnes                 | SO<sub>2</sub> emissions from residue mobilization   |
- | transportation.diesel.VOC_tonnes                 | VOC emissions from residue mobilization              |
+### Software requirements
 
-### pp_output
-***
-| Variable                             | Description                                          |
-| ------------------------------------ | ---------------------------------------------------- |
-| plant.type                           | Technology being used at power plant location        |
-| plant.location                       | Name of power plant                                  |
-| residue.burned.to.electricity_tonnes | mass of material burned for electricity              |
-| residue.burned.to.heat_tonnes        | mass of material burned for cogen heat               |
-| mass.to.plant_tonnes                 | mass of material brought to power plant              |
-| pp_waste.flyash_ash_tonnes           | Ash by-product from power plant (no carbon content)  |
-| pp_waste.flyash_char_tonnes          | Char by-product from power plant (carbon containing) |
-| pp_electricity.CO2_tonnes            | CO<sub>2</sub> emissions from the power plant        |
-| pp_electricity.CO_tonnes             | CO emissions from the power plant                    |
-| pp_electricity.CH4_tonnes            | CH<sub>4</sub> emissions from the power plant        |
-| pp_electricity.NOx_tonnes            | NO<sub>x</sub> emissions from the power plant        |
-| pp_electricity.N2O_tonnes            | N<sub>2</sub> emissions from the power plant         |
-| pp_electricity.PMUnder10um_tonnes    | PM10 emissions from the power plant                  |
-| pp_electricity.PMUnder2.5um_tonnes   | PM2.5 emissions from the power plant                 |
-| pp_electricity.BC_tonnes             | Black Carbon from power plant                        |
-| pp_electricity.SO2_tonnes            | SO<sub>2</sub> emissions from the power plant        |
-| pp_electricity.VOC_tonnes            | VOC emissions from the power plant                   |
-| pp_energy.production_MWh             | Amount of usable MWhs                                |
-| pp_energy.production_MMBtu           | Amount of usable MMBTUs                              |
-| ng_off_CO2_tonnes                    | Offset CO<sub>2</sub> emissions (negative value)     |
-| ng_off_CO_tonnes                     | Offset CO emissions (negative value)                 |
-| ng_off_CH4_tonnes                    | Offset CH<sub>2</sub> emissions (negative value)     |
-| ng_off_NOx_tonnes                    | Offset NO<sub>x</sub> emissions (negative value)     |
-| ng_off_N2O_tonnes                    | Offset N<sub>2</sub>O emissions (negative value)     |
-| ng_off_PMUnder2.5um_tonnes           | Offset PM2.5 emissions (negative value)              |
-| ng_off_BC_tonnes                     | Offset Black Carbon emissions (negative value)       |
-| ng_off_SO2_tonnes                    | Offset SO<sub>2</sub> emissions (negative value)     |
-| ng_off_VOC_tonnes                    | Offset VOC emissions (negative value)                |
+To run the main scenario_emissions function, the following is required:
 
-## BroadcastBurn
-***
-| Variable                           | Description                               |
-| ---------------------------------- | ----------------------------------------- |
-| broadcast.burn.CO2_tonnes          | CO<sub>2</sub> emissions from broadcast   |
-| broadcast.burn.CO_tonnes           | CO emissions from broadcast               |
-| broadcast.burn.CH4_tonnes          | CH<sub>4</sub> emissions from broadcast   |
-| broadcast.burn.NOx_tonnes          | NO<sub>x</sub> emissions from broadcast   |
-| broadcast.burn.N2O_tonnes          | N<sub>2</sub> emissions from broadcast    |
-| broadcast.burn.PMUnder10um_tonnes  | PM10 emissions from broadcast             |
-| broadcast.burn.PMUnder2.5um_tonnes | PM2.5 emissions from broadcast            |
-| broadcast.burn.BC_tonnes           | Black Carbon from broadcast               |
-| broadcast.burn.SO2_tonnes          | SO<sub>2</sub> emissions from broadcast   |
-| broadcast.burn.VOC_tonnes          | VOC emissions from broadcast              |
-| broadcast.burned.residue_tonnes    | Mass of material burned in broadcast burn |
+* A current version of R
+* A current version of Rstudio
+* The following R packages and their dependencies:
+        - future.apply 
+        - data.table
+        - sf 
+* The CBREC Rstudio project folder, including CBREC-Fire, CBREC-LCA, and associated inputs to each.
+* At least 24 logical CPU cores at >2GHz each for a barely tolerable run time (month-scale), more is better.
+* At least 160GB RAM, more is required for higher CPU core count.
+* At least 4TB storage. This is completely dependent on the spatial resolution and extent of the run. 4TB is for a statewide run with fire emissions resolution of 200 acres and LCA emissions resolution at sub-ecoregion scale.
+        
+Packages can be installed as follows:
 
-## PileBurn
-***
-| Variable                      | Description                             |
-| ----------------------------- | --------------------------------------- |
-| pile.burn.CO2_tonnes          | CO<sub>2</sub> emissions from pile burn |
-| pile.burn.CO_tonnes           | CO emissions from pile burn             |
-| pile.burn.CH4_tonnes          | CH<sub>4</sub> emissions from pile burn |
-| pile.burn.NOx_tonnes          | NO<sub>x</sub> emissions from pile burn |
-| pile.burn.N2O_tonnes          | N<sub>2</sub> emissions from pile burn  |
-| pile.burn.PMUnder10um_tonnes  | PM10 emissions from pile burn           |
-| pile.burn.PMUnder2.5um_tonnes | PM2.5 emissions from pile burn          |
-| pile.burn.BC_tonnes           | Black Carbon from pile burn             |
-| pile.burn.SO2_tonnes          | SO<sub>2</sub> emissions from pile burn |
-| pile.burn.VOC_tonnes          | VOC emissions from pile burn            |
-| pile.burned.residue_tonnes    | Mass of material burned in pile burn    |
+```
+install.packages("data.table")
+```
+
+Other packages and software are required to reproduce the entire project. Packages are loaded at the beginning of every script where possible. All scripts have a description header.
+
+## Summary Overview
+
+Text
+
+### Usage
+
+Text
+
+## What it does
+
+Text
+
+## Output description
+
+Text
+
+## Versioning
+
+We use [git](https://git-scm.com/) for version control on this project. For a complete history, see the [this repository](https://github.com/SchatzCenter/CBREC). 
+
+## Authors
+
+* Andy Harris (Lead Author) - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Jerome Qiriazi](https://github.com/jqiriazi) (Project Manager) - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Max Blasdel](https://github.com/mxblsdl) - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Micah Wright](https://github.com/wrightmicahc) - [Schatz Energy Research Center](https://schatzcenter.org)
+* Chih-Wei Hsu - [Schatz Energy Research Center](https://schatzcenter.org)
+
+### Acknowledgments
+
+* This project was funded by the California Energy Commission's (CEC) Electric Program Investment Charge (EPIC) program under contract agreement EPC-16-047. DISCLAIMER: This source code was prepared as the result of work sponsored by the California Energy Commission. It does not necessarily represent the views of the CEC, its employees, or the State of California. The CEC, the State of California, its employees, contractors, and subcontractors make no warrant, express or implied, and assume no legal liability for the information in this report; nor does any party represent that the uses of this information will not infringe upon privately owned rights. This report has not been approved or disapproved by the California Energy Commission, nor has the California Energy Commission passed upon the accuracy or adequacy of the information in this report.
