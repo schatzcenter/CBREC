@@ -55,7 +55,7 @@ Other packages and software are required to reproduce the entire project. Packag
 
 Text
 
-### Usage
+## Usage
 
 Text
 
@@ -79,6 +79,8 @@ We use [git](https://git-scm.com/) for version control on this project. For a co
 * [Micah Wright](https://github.com/wrightmicahc) - [Schatz Energy Research Center](https://schatzcenter.org)
 * Chih-Wei Hsu - [Schatz Energy Research Center](https://schatzcenter.org)
 
-### Acknowledgments
+## Acknowledgments
+
+* <list acknowledgments>
 
 * This project was funded by the California Energy Commission's (CEC) Electric Program Investment Charge (EPIC) program under contract agreement EPC-16-047. DISCLAIMER: This source code was prepared as the result of work sponsored by the California Energy Commission. It does not necessarily represent the views of the CEC, its employees, or the State of California. The CEC, the State of California, its employees, contractors, and subcontractors make no warrant, express or implied, and assume no legal liability for the information in this report; nor does any party represent that the uses of this information will not infringe upon privately owned rights. This report has not been approved or disapproved by the California Energy Commission, nor has the California Energy Commission passed upon the accuracy or adequacy of the information in this report.
