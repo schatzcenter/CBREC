@@ -29,7 +29,32 @@ Download or fork the repository from [github.com/SchatzCenter/CBREC](https://git
 The file structure is shown in the following tree. 
 
 ```
-File structure to be filled in
++-- CBREC-LCA_input_filepaths.csv  # Contains file paths to all required inputs. Note that some inputs
+|                                  # point to the C-BREC Fire Module file structure.
++-- functions                      # Multiple R scripts that contain functions and constants
++-- input                          # Contains nearly all of the inputs to the module, with the
+|                                  # exception of reference to the C-BREC Fire Module (see
+|                                  # CBREC-LCA_input_filepaths.csv).
+|   +-- case_definitions           # Directory containing .csv files that contain definitions
+|                                  # of cases, and list of cases to run
+|   +-- equip_pp_emissions         # Directory containing .csv files of equipment and power
+|                                  # plant emissions factors
+|   +-- pp_decay_wfprob            # Directory containing .rds files for each tile ID in the tile
+|                                  # shape file (see the fire_tiles_filepath variable in
+|                                  # CBREC-LCA_input_filepaths.csv). Each .rds file contains hauling
+|                                  # distance to and ID of the nearest power plant, decay constants,
+|                                  # and annual wildfire probability for each raster cell ID (see
+|                                  # residue_resource directory).
+|   +-- project_polygons           # Directory containing shapefile of polygons that define
+|                                  # the project or projects that will be run
+|   +-- residue_resource           # Directory containing a spatial raster of cell ID numbers for the
+|                                  # State of Calfornia, and .csv files containing biomass properties
+|                                  # and residue amounts for each raster cell.
++-- output                         # Directory for holding output from both the main program script
+|                                  # and the post-processing script.
++-- README.md                      # This readme
++-- run_CBREC-LCA.R                # main C-BREC LCA program script
++-- run_post-processing.R          # calculates net emissions and climate impact metrics
 ```
 
 ### Prerequisites
@@ -45,7 +70,7 @@ The following is required:
         - future.apply 
         - data.table
         - sf 
-* The CBREC Rstudio project folder, including CBREC-Fire, CBREC-LCA, and associated inputs to each.
+* The CBREC project folder, including CBREC-Fire, CBREC-LCA, and associated inputs to each.
 * The following minimum recommended resources for flexibility in spatial resolution and extent of the intended run. Note that required resources are dictated by the spatial resolution (the size of the individual project(s) being run) and the spatial extent (the fraction of the area of the State of California) chosen by the user. The following are based on running a large number of projects (10^4 or more) or a statewide run at low spatial resolution (50+ regions).
   * At least 24 logical CPU cores at >2GHz each. This results in a roughly 1 month runtime.
   * At least 160GB RAM, more is required for higher CPU core count.
@@ -69,7 +94,19 @@ Note that output from the [C-BREC Fire Module](https://github.com/schatzcenter/C
 
 ### Summary Overview
 
-Text
+Unlike the C-BREC Fire Module, the C-BREC LCA Module is project-based. The C-BREC LCA Module can be run repeatedly on single projects and/or batches of projects.
+
+The process for running the C-BREC LCA Module is the following:
+
+1. If it hasn't already been run, make sure to run the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire) first. The output from the C-BREC Fire Module is a required input for this module. The C-BREC Fire Module only needs to be run once because it generates results for the entire State of California.
+
+2. Create a polygon shapefile that contains the shapes for each project that C-BREC LCA will be run on. The shapefile can contain any number of polygons, thereby allowing a batch run of multiple projects if desired. Furthermore, each shape doesn't necessarily need to represent a project per se. It simply defines a region over which residue mobilization is implemented. For example, the shapefile can contain shapes that divide up the entire State of California into different regions, such as eco-regions.
+
+   a. Note that there is a script flag `useactivitycodes` (described below) that can be set if the user wishes to specify the type of primary silvacultural treatment that is conducted on each project location. If this is set to true, this requires that the polygon shapefile contain a `treat_code` attribute that contains this definition.
+
+3. Update the CBREC-LCA_input_filepaths.csv file to reflect name and location of the polygon shapefile.
+
+4. Choose whether to execute run_CBREC-LCA.R in an IDE environment (such as RStudio) or at the command line. It is recommended that large batch runs be executed at the command line to avoid IDE overhead consuming additional unnecessary computer resources.
 
 ### Usage
 

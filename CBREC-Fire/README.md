@@ -68,6 +68,8 @@ Other packages and software are required to reproduce the entire project. Packag
 
 ### Summary Overview
 
+The C-BREC Fire Module is designed to generate prescribed burn and wildfire emissions profiles from the combustion of residues only (not including standing trees or merchantable timber, and not including the fuel bed except where explicitly labeled as such). Furthermore, this module is designed to generate results for the entire State of California. In other words, unlike the C-BREC LCA Module, this module is not project based. It is only necessary to run this module once, where as the C-BREC LCA Module is designed to be run numerous times for different inputs.
+
 The process for calculating the consumption and emissions for a single tile over 5 timesteps (0, 25, 50, 75, and 100) is shown below. 
 
 1. The case lookup table is loaded. The following steps are run for each case.
@@ -90,7 +92,7 @@ The process for calculating the consumption and emissions for a single tile over
 
 ### Usage
 
-This project is in the Rstudio project format, so all scripts must be sourced relative to the main CBREC folder. The steps to calculate emissions for a single tile are shown below. In this example, emissions and residual (unconsumed) fuel are estimated for a fixed set of scenarios over five time steps over a 100-year period for tile number 300. For ease of use when running on multiple tiles, the run_all function wraps the scenario_emissions function, which in turn wraps all other functions. For efficiency, the scenario_emissions function implements parallel processing using the future.apply package, which is platform independent. 
+This project is in the Rstudio project format, so all scripts are designed to be sourced relative to the main CBREC folder. The steps to calculate emissions for a single tile are shown below. In this example, emissions and residual (unconsumed) fuel are estimated for a fixed set of scenarios over five time steps over a 100-year period for tile number 300. For ease of use when running on multiple tiles, the run_all function wraps the scenario_emissions function, which in turn wraps all other functions. For efficiency, the scenario_emissions function implements parallel processing using the future.apply package, which is platform independent. 
 
 ```
 source("CBREC-Fire/run_CBREC-Fire.R")
