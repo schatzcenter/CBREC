@@ -31,7 +31,6 @@ The file structure is shown in the following tree.
 ```
 File structure to be filled in
 ```
-All input data required for running v1.2.1 can be downloaded via [![DOI](https://sandbox.zenodo.org/badge/DOI/10.5072/zenodo.899028.svg)](https://doi.org/10.5072/zenodo.899028)
 
 ### Prerequisites
 
@@ -39,18 +38,18 @@ This project was written in R using the Rstudio project framework.
 
 #### Software requirements
 
-To run the main scenario_emissions function, the following is required:
+The following is required:
 
 * A current version of R
-* A current version of Rstudio
 * The following R packages and their dependencies:
         - future.apply 
         - data.table
         - sf 
 * The CBREC Rstudio project folder, including CBREC-Fire, CBREC-LCA, and associated inputs to each.
-* At least 24 logical CPU cores at >2GHz each for a barely tolerable run time (month-scale), more is better.
-* At least 160GB RAM, more is required for higher CPU core count.
-* At least 2TB storage. This is not thoroughly tested. More storage is better.
+* The following minimum recommended resources for flexibility in spatial resolution and extent of the intended run. Note that required resources are dictated by the spatial resolution (the size of the individual project(s) being run) and the spatial extent (the fraction of the area of the State of California) chosen by the user. The following are based on running a large number of projects (10^4 or more) or a statewide run at low spatial resolution (50+ regions).
+  * At least 24 logical CPU cores at >2GHz each. This results in a roughly 1 month runtime.
+  * At least 160GB RAM, more is required for higher CPU core count.
+  * At least 4TB storage to support both the total size of input data and total size of output data. This is not thoroughly tested. More storage is better.
         
 Packages can be installed as follows:
 
@@ -59,6 +58,14 @@ install.packages("data.table")
 ```
 
 Other packages and software are required to reproduce the entire project. Packages are loaded at the beginning of every script where possible. All scripts have a description header.
+
+### Input Data
+
+All static input data required to run C-BREC LCA Module can be downloaded at one of the DOI links below (choose the correct DOI for the version you are running):
+
+* v1.2.1 and later: [![DOI](https://sandbox.zenodo.org/badge/DOI/10.5072/zenodo.899028.svg)](https://doi.org/10.5072/zenodo.899028)
+
+Note that output from the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire) is also a required input. Hence, the user must first run the C-BREC Fire Module prior to running the C-BREC LCA module. The relative file path for the outputs of the C-BREC Fire Module is specified in the CBREC-LCA_input_filepaths.csv file which is one of the input data files that can be found via the above Zenodo DOI link. See the Usage section below for more details.
 
 ### Summary Overview
 

@@ -46,10 +46,9 @@ This project was written in R using the Rstudio project framework.
 
 #### Software requirements
 
-To run the main scenario_emissions function, the following is required:
+The following is required:
 
 * A current version of R
-* A current version of Rstudio
 * The following R packages and their dependencies:
         - future.apply 
         - data.table
