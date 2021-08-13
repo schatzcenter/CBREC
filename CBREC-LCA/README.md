@@ -3,9 +3,9 @@
 
 ## Life Cycle Assessment Module
 
-This module is part of the [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec). Additional methodological documentation can be found on the C-BREC Model website. The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
+This module is part of the [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec). Additional methodological documentation can be found on the C-BREC Model website. The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for the model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
 
-This module calculates life cycle gross and net
+This module calculates life cycle gross and net:
 
 * Greenhouse gas emissions
 * Climate impact metrics: global warming potential and global temperature potential
@@ -31,6 +31,7 @@ The file structure is shown in the following tree.
 ```
 File structure to be filled in
 ```
+All input data required for running v1.2.1 can be downloaded via [![DOI](https://sandbox.zenodo.org/badge/DOI/10.5072/zenodo.899028.svg)](https://doi.org/10.5072/zenodo.899028)
 
 ### Prerequisites
 
@@ -77,7 +78,11 @@ Text
 
 ### Versioning
 
-We use [git](https://git-scm.com/) for version control on this project. For a complete history, see the [this repository](https://github.com/SchatzCenter/CBREC). 
+We use [git](https://git-scm.com/) for version control on this project. For a complete history, see the [this repository](https://github.com/SchatzCenter/CBREC).
+
+Code releases are automatically archived and assigned a DOI using [Zenodo](https://zenodo.org). The latest DOI badge is included on the repository page.
+
+Release versions (on GitHub and Zenodo) will always correlate. Furthermore, the release version will always correlate with the framework documentation version this is included in this repository.
 
 ### Authors
 
@@ -85,7 +90,7 @@ We use [git](https://git-scm.com/) for version control on this project. For a co
 * [Jerome Qiriazi](https://github.com/jqiriazi) (Project Manager) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Max Blasdel](https://github.com/mxblsdl) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Micah Wright](https://github.com/wrightmicahc) - [Schatz Energy Research Center](https://schatzcenter.org)
-* Chih-Wei Hsu - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Chih-Wei Hsu](https://www.linkedin.com/in/chihweihsu/) - [Schatz Energy Research Center](https://schatzcenter.org)
 
 ### Acknowledgments
 
