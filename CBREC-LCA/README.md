@@ -92,12 +92,6 @@ All static input data required to run C-BREC LCA Module can be downloaded at one
 
 Note that output from the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire) is also a required input. Hence, the user must first run the C-BREC Fire Module prior to running the C-BREC LCA module. The relative file path for the outputs of the C-BREC Fire Module is specified in the CBREC-LCA_input_filepaths.csv file which is one of the input data files that can be found via the above Zenodo DOI link. See the Usage section below for more details.
 
-### Summary Overview
-
-
-
-
-
 ### Usage
 
 Unlike the C-BREC Fire Module, the C-BREC LCA Module is project-based. The C-BREC LCA Module can be run repeatedly on single projects and/or batches of projects. Each run is assumed to have different inputs (i.e. different values in the input file) and different output directory paths specified.
@@ -114,8 +108,21 @@ The main model script generates 100 year time series of gross emissions for each
 
 2. Create a polygon shapefile that contains the shapes for each project that C-BREC LCA will be run on. The shapefile can contain any number of polygons, thereby allowing a batch run of multiple projects if desired. Furthermore, each shape doesn't necessarily need to represent a project per se. It simply defines a region over which residue mobilization is implemented. For example, the shapefile can contain shapes that divide up the entire State of California into different regions, such as eco-regions.
 
-   a. Note that there is a script flag `useactivitycodes` (described below) that can be set if the user wishes to specify the type of primary silvacultural treatment that is conducted on each project location. If this is set to true, this requires that the polygon shapefile contain a `treat_code` attribute that contains this definition. The allowed values for `treat_code` are
-        i. 
+   a. Note that there is a script flag `useactivitycodes` (described below) that can be set if the user wishes to specify the type of primary silvacultural treatment that is conducted on each project location. If this is set to true, this requires that the polygon shapefile contain a `treat_code` attribute that contains this definition. The allowed values for `treat_code` are:
+   
+      i.    RM100: Remove 100% of basal area
+      ii.   TFA20: Thin from above 20% of basal area
+      iii.  TFA40: Thin from above 40% of basal area
+      iv.   TFA60: Thin from above 60% of basal area
+      v.    TFA80: Thin from above 80% of basal area
+      vi.   TFB20: Thin from below 20% of basal area
+      vii.  TFB40: Thin from below 40% of basal area
+      viii. TFB60: Thin from below 60% of basal area
+      ix.   TFB80: Thin from below 80% of basal area
+      x.    TFP20: Proportionally thin 20% of basal area
+      xi.   TFP40: Proportionally thin 40% of basal area
+      xii.  TFP60: Proportionally thin 60% of basal area
+      xiii. TFP80: Proportionally thin 80% of basal area
 
 3. Update the CBREC-LCA_input_filepaths.csv file to reflect name and location of the polygon shapefile.
 
