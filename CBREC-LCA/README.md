@@ -94,31 +94,60 @@ Note that output from the [C-BREC Fire Module](https://github.com/schatzcenter/C
 
 ### Summary Overview
 
-Unlike the C-BREC Fire Module, the C-BREC LCA Module is project-based. The C-BREC LCA Module can be run repeatedly on single projects and/or batches of projects.
 
-The process for running the C-BREC LCA Module is the following:
+
+
+
+### Usage
+
+Unlike the C-BREC Fire Module, the C-BREC LCA Module is project-based. The C-BREC LCA Module can be run repeatedly on single projects and/or batches of projects. Each run is assumed to have different inputs (i.e. different values in the input file) and different output directory paths specified.
+
+There are two steps to running the C-BREC LCA Module:
+1. Execute main model script `run_CBREC-LCA.R`
+2. Execute post processing script `run_post-processing.R`
+
+#### Executing `run_CBREC-LCA.R`
+
+The main model script generates 100 year time series of gross emissions for each specified case, disaggregated by source and emission species. The following steps describe how to execute this script.
 
 1. If it hasn't already been run, make sure to run the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire) first. The output from the C-BREC Fire Module is a required input for this module. The C-BREC Fire Module only needs to be run once because it generates results for the entire State of California.
 
 2. Create a polygon shapefile that contains the shapes for each project that C-BREC LCA will be run on. The shapefile can contain any number of polygons, thereby allowing a batch run of multiple projects if desired. Furthermore, each shape doesn't necessarily need to represent a project per se. It simply defines a region over which residue mobilization is implemented. For example, the shapefile can contain shapes that divide up the entire State of California into different regions, such as eco-regions.
 
-   a. Note that there is a script flag `useactivitycodes` (described below) that can be set if the user wishes to specify the type of primary silvacultural treatment that is conducted on each project location. If this is set to true, this requires that the polygon shapefile contain a `treat_code` attribute that contains this definition.
+   a. Note that there is a script flag `useactivitycodes` (described below) that can be set if the user wishes to specify the type of primary silvacultural treatment that is conducted on each project location. If this is set to true, this requires that the polygon shapefile contain a `treat_code` attribute that contains this definition. The allowed values for `treat_code` are
+        i. 
 
 3. Update the CBREC-LCA_input_filepaths.csv file to reflect name and location of the polygon shapefile.
 
-4. Choose whether to execute run_CBREC-LCA.R in an IDE environment (such as RStudio) or at the command line. It is recommended that large batch runs be executed at the command line to avoid IDE overhead consuming additional unnecessary computer resources.
+4. Choose whether to execute run_CBREC-LCA.R in an IDE environment (such as RStudio) or at the command line. It is recommended that large batch runs be executed at the command line to avoid IDE overhead consuming additional unnecessary computer resources. Command line flag options are:
 
-### Usage
+```
+-c, --cores             # Specify the number of CPU cores to utilize [default parallel:detectCores()/2]
+-d, --debug             # Print extra output for debugging (currently not fully implemented) [default F]
+-i, --infile            # Relative path to .csv file specifying inputs [default "CBREC-LCA/input/CBREC-LCA_input_filepaths.csv"]
+-o, --outdir            # Relative output directory path [default "Cbrec-LCA/output/default-output-dir/"]
+-u, --useactivitycodes  # If running project polygons with specified treatment activity codes, set to T [default F]
+-v, --verbose           # Print extra output [default F]
+```
 
-Text
+#### Executing `run_post-processing.R`
 
-### What it does
-
-Text
+Once `run_CBREC-LCA.R` is finished running, gross emissions for each specified case must be processed to generate net mass of emissions and climate metrics for specified scenarios.
 
 ### Output description
 
-Text
+Outputs of the `run_CBREC-LCA.R` script will be located in the specified output directory. This will have the following directory structure:
+
+```
++-- results     # Contains .rds files, one for each shape ID in the specified project polygon shapefile
++-- runlogs     # Contains runlogs
+```
+
+Each of the .rds files has the following nest list structure
+
+```
+
+```
 
 ### Versioning
 
