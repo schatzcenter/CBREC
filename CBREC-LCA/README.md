@@ -29,14 +29,16 @@ Download or fork the repository from [github.com/SchatzCenter/CBREC](https://git
 The file structure is shown in the following tree. 
 
 ```
-+-- CBREC-LCA_input_filepaths.csv  # Contains file paths to all required inputs. Note that some inputs
-|                                  # point to the C-BREC Fire Module file structure.
++-- CBREC-LCA_input_filepaths.csv  # Contains file paths to all required inputs for the
+|                                  # `run_CBREC-LCA.R` script. Note that some inputs point to the
+|                                  # C-BREC Fire Module file structure.
 +-- functions                      # Multiple R scripts that contain functions and constants
 +-- input                          # Contains nearly all of the inputs to the module, with the
 |                                  # exception of reference to the C-BREC Fire Module (see
 |                                  # CBREC-LCA_input_filepaths.csv).
 |   +-- case_definitions           # Directory containing .csv files that contain definitions
-|                                  # of cases, and list of cases to run
+|                                  # of cases, list of cases to run, and allowed pairings of cases
+|                                  # which specify use/reference scenarios.
 |   +-- equip_pp_emissions         # Directory containing .csv files of equipment and power
 |                                  # plant emissions factors
 |   +-- pp_decay_wfprob            # Directory containing .rds files for each tile ID in the tile
@@ -108,23 +110,23 @@ The main model script generates 100 year time series of gross emissions for each
 
 2. Create a polygon shapefile that contains the shapes for each project that C-BREC LCA will be run on. The shapefile can contain any number of polygons, thereby allowing a batch run of multiple projects if desired. Furthermore, each shape doesn't necessarily need to represent a project per se. It simply defines a region over which residue mobilization is implemented. For example, the shapefile can contain shapes that divide up the entire State of California into different regions, such as eco-regions.
 
-   a. Note that there is a script flag `useactivitycodes` (described below) that can be set if the user wishes to specify the type of primary silvacultural treatment that is conducted on each project location. If this is set to true, this requires that the polygon shapefile contain a `treat_code` attribute that contains this definition. The allowed values for `treat_code` are:
+   Note that there is a script flag `useactivitycodes` (described below) that can be set if the user wishes to specify the type of primary silvacultural treatment that is conducted on each project location. If this is set to true, this requires that the polygon shapefile contain a `treat_code` attribute that contains this definition. The allowed values for `treat_code` are:
    
-      i.    RM100: Remove 100% of basal area
-      ii.   TFA20: Thin from above 20% of basal area
-      iii.  TFA40: Thin from above 40% of basal area
-      iv.   TFA60: Thin from above 60% of basal area
-      v.    TFA80: Thin from above 80% of basal area
-      vi.   TFB20: Thin from below 20% of basal area
-      vii.  TFB40: Thin from below 40% of basal area
-      viii. TFB60: Thin from below 60% of basal area
-      ix.   TFB80: Thin from below 80% of basal area
-      x.    TFP20: Proportionally thin 20% of basal area
-      xi.   TFP40: Proportionally thin 40% of basal area
-      xii.  TFP60: Proportionally thin 60% of basal area
-      xiii. TFP80: Proportionally thin 80% of basal area
+       RM100: Remove 100% of basal area
+       TFA20: Thin from above 20% of basal area
+       TFA40: Thin from above 40% of basal area
+       TFA60: Thin from above 60% of basal area
+       TFA80: Thin from above 80% of basal area
+       TFB20: Thin from below 20% of basal area
+       TFB40: Thin from below 40% of basal area
+       TFB60: Thin from below 60% of basal area
+       TFB80: Thin from below 80% of basal area
+       TFP20: Proportionally thin 20% of basal area
+       TFP40: Proportionally thin 40% of basal area
+       TFP60: Proportionally thin 60% of basal area
+       TFP80: Proportionally thin 80% of basal area
 
-3. Update the CBREC-LCA_input_filepaths.csv file to reflect name and location of the polygon shapefile.
+3. Update the CBREC-LCA_input_filepaths.csv file to reflect name and location of the polygon shapefile. Make any other file path updates if needed.
 
 4. Choose whether to execute run_CBREC-LCA.R in an IDE environment (such as RStudio) or at the command line. It is recommended that large batch runs be executed at the command line to avoid IDE overhead consuming additional unnecessary computer resources. Command line flag options are:
 
@@ -158,22 +160,22 @@ Each of the .rds files has the following nested list structure
 |     +-- field.residue.removed_tonnes
 |     +-- total.biomass.mobilized_tonnesAcre
 |     +-- CandP
-|        +-- CandP_dry_grind
-|           +-- collection.processing.diesel.CO2_tonnes
-|           +-- collection.processing.diesel.CO_tonnes
-|           +-- collection.processing.diesel.N2O_tonnes
-|           +-- collection.processing.diesel.CH4_tonnes
-|           +-- collection.processing.diesel.NOx_tonnes
-|           +-- collection.processing.diesel.PMUnder10um_tonnes
-|           +-- collection.processing.diesel.PMUnder2.5um_tonnes
-|           +-- collection.processing.diesel.BC_tonnes
-|           +-- collection.processing.diesel.SO2_tonnes
-|           +-- collection.processing.diesel.VOC_tonnes
-|           +-- transportation.onroad.diesel.CO2_tonnes
-|           +-- transportation.onroad.diesel.CO_tonnes
-|           +-- transportation.onroad.diesel.N2O_tonnes
-|           +-- transportation.onroad.diesel.CH4_tonnes
-|           +-- transportation.onroad.diesel.NOx_tonnes
+|        +-- CandP_dry_grind                                      # Collection and processing emissions for low moisture, grind comminution, large project (>= 1,000 BDT and >= 13 BDT per acre
+|           +-- collection.processing.diesel.CO2_tonnes           # single double value occurring in the first project year
+|           +-- collection.processing.diesel.CO_tonnes            # single double value occurring in the first project year
+|           +-- collection.processing.diesel.N2O_tonnes           # single double value occurring in the first project year
+|           +-- collection.processing.diesel.CH4_tonnes           # single double value occurring in the first project year
+|           +-- collection.processing.diesel.NOx_tonnes           # single double value occurring in the first project year
+|           +-- collection.processing.diesel.PMUnder10um_tonnes   # single double value occurring in the first project year
+|           +-- collection.processing.diesel.PMUnder2.5um_tonnes  # single double value occurring in the first project year
+|           +-- collection.processing.diesel.BC_tonnes            # single double value occurring in the first project year
+|           +-- collection.processing.diesel.SO2_tonnes           # single double value occurring in the first project year
+|           +-- collection.processing.diesel.VOC_tonnes           # single double value occurring in the first project year
+|           +-- transportation.onroad.diesel.CO2_tonnes           # single double value occurring in the first project year
+|           +-- transportation.onroad.diesel.CO_tonnes            # single double value occurring in the first project year
+|           +-- transportation.onroad.diesel.N2O_tonnes           # single double value occurring in the first project year
+|           +-- transportation.onroad.diesel.CH4_tonnes           # single double value occurring in the first project year
+|           +-- transportation.onroad.diesel.NOx_tonnes           # single double value occurring in the first project year
 |           +-- transportation.onroad.diesel.PMUnder10um_tonnes
 |           +-- transportation.onroad.diesel.PMUnder2.5um_tonnes
 |           +-- transportation.onroad.diesel.BC_tonnes
@@ -190,12 +192,12 @@ Each of the .rds files has the following nested list structure
 |           +-- transportation.offroad.diesel.SO2_tonnes
 |           +-- transportation.offroad.diesel.VOC_tonnes
 |           +-- transportation.onroad.diesel.distance_km
-|        +-- CandP_green_chip
-|           +-- ...
-|        +-- CandP_green_grind
-|           +-- ...
-|        +-- CandP_low
-|           +-- ...
+|        +-- CandP_green_chip                                      # Collection and processing emissions for high moisture, chipping comminution, and large project (>= 1,000 BDT and >= 13 BDT per acre
+|           +-- ... identical structure as CandP_dry_grind
+|        +-- CandP_green_grind                                      # Collection and processing emissions for high moisture, grind comminution, and large project (>= 1,000 BDT and >= 13 BDT per acre
+|           +-- ... identical structure as CandP_dry_grind
+|        +-- CandP_low                                              # Collection and processing emissions for low moisture, grind comminution, and small project (< 1,000 BDT or < 13 BDT per acre
+|           +-- ... identical structure as CandP_dry_grind
 |     +-- PP
 |        +-- Nearest
 |           +-- plant.type
@@ -229,13 +231,13 @@ Each of the .rds files has the following nested list structure
 |           +-- pp_electricity.CO2_tonnes
 |           +-- pp_electricity.BC_tonnes
 |        +-- CurrentGenCombustionPlantDefault
-|           +-- ...
+|           +-- ... identical structure as Nearest
 |        +-- CurrentGenIG/CombustionPlantDefault
-|           +-- ...
+|           +-- ... identical structure as Nearest
 |        +-- NextGenThermochemicalPlantDefault
-|           +-- ...
+|           +-- ... identical structure as Nearest
 |        +-- LessThan1MWPlant
-|           +-- ...
+|           +-- ... identical structure as Nearest
 |     +-- BroadcastBurn
 |           +-- broadcast.burn.CO2_tonnes
 |           +-- broadcast.burn.CO_tonnes
@@ -279,6 +281,50 @@ Each of the .rds files has the following nested list structure
 |     +-- wildfire.BC_tonnes
 |     +-- decay.CO2_tonnes
 |     +-- decay.CH4_tonnes
++-- <case ID>
+|   ...
+```
+
+Outputs from the `run_CBREC-LCA.R` script are then used as inputs to the `run_post-processing.R` script. The output structure of the `run_post-processing.R` script is scenario-based:
+```
++-- <use case ID> x <reference case ID>
+|  +-- use
+|     +-- MT_Residue_Mobilized
+|     +-- MT_Residue_Mobilized_perAcre
+|     +-- MT_Residue_Delivered
+|     +-- MT_Residue_Burned
+|     +-- MWh_Generated
+|     +-- CO2.mass
+|        +-- pp_storage.CO2_tonnes
+|        +-- pp_electricity.CO2_tonnes
+|        +-- collection.processing.diesel.CO2_tonnes
+|        +-- transportation.onroad.diesel.CO2_tonnes
+|        +-- transportation.offroad.diesel.CO2_tonnes
+|        +-- wildfire.CO2_tonnes
+|        +-- decay.CO2_tonnes
+|        +-- total.CO2_tonnes
+|     +-- CH4.mass
+|        +-- 
+|     +-- N2O.mass
+|     +-- PM2.5.mass
+|     +-- CO.mass
+|     +-- NOx.mass
+|     +-- PM10.mass
+|     +-- VOC.mass
+|     +-- SO2.mass
+|     +-- BC.mass
+|     +-- char.mass
+|     +-- CO2.AGWP
+|     +-- CH4.AGWP
+|     +-- N2O.AGWP
+|     +-- CO2.AGTP
+|     +-- CH4.AGTP
+|     +-- N2O.AGTP
+|     +-- CO2e.AGWP.###yr_MT
+|     +-- CO2e.AGTP.###yr_MT
+|  +-- ref
+|     +-- 
+|  +-- net
 ```
 
 ### Versioning
