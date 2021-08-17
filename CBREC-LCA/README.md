@@ -160,7 +160,7 @@ Each of the .rds files has the following nested list structure
 |     +-- field.residue.removed_tonnes
 |     +-- total.biomass.mobilized_tonnesAcre
 |     +-- CandP
-|        +-- CandP_dry_grind                                      # Collection and processing emissions for low moisture, grind comminution, large project (>= 1,000 BDT and >= 13 BDT per acre
+|        +-- CandP_dry_grind                                      # Collection and processing emissions for low moisture, grind comminution, large project (>= 1,000 BDT and >= 13 BDT per acre)
 |           +-- collection.processing.diesel.CO2_tonnes           # single double value occurring in the first project year
 |           +-- collection.processing.diesel.CO_tonnes            # single double value occurring in the first project year
 |           +-- collection.processing.diesel.N2O_tonnes           # single double value occurring in the first project year
@@ -176,155 +176,205 @@ Each of the .rds files has the following nested list structure
 |           +-- transportation.onroad.diesel.N2O_tonnes           # single double value occurring in the first project year
 |           +-- transportation.onroad.diesel.CH4_tonnes           # single double value occurring in the first project year
 |           +-- transportation.onroad.diesel.NOx_tonnes           # single double value occurring in the first project year
-|           +-- transportation.onroad.diesel.PMUnder10um_tonnes
-|           +-- transportation.onroad.diesel.PMUnder2.5um_tonnes
-|           +-- transportation.onroad.diesel.BC_tonnes
-|           +-- transportation.onroad.diesel.SO2_tonnes
-|           +-- transportation.onroad.diesel.VOC_tonnes
-|           +-- transportation.offroad.diesel.CO2_tonnes
-|           +-- transportation.offroad.diesel.CO_tonnes
-|           +-- transportation.offroad.diesel.N2O_tonnes
-|           +-- transportation.offroad.diesel.CH4_tonnes
-|           +-- transportation.offroad.diesel.NOx_tonnes
-|           +-- transportation.offroad.diesel.PMUnder10um_tonnes
-|           +-- transportation.offroad.diesel.PMUnder2.5um_tonnes
-|           +-- transportation.offroad.diesel.BC_tonnes
-|           +-- transportation.offroad.diesel.SO2_tonnes
-|           +-- transportation.offroad.diesel.VOC_tonnes
-|           +-- transportation.onroad.diesel.distance_km
-|        +-- CandP_green_chip                                      # Collection and processing emissions for high moisture, chipping comminution, and large project (>= 1,000 BDT and >= 13 BDT per acre
+|           +-- transportation.onroad.diesel.PMUnder10um_tonnes   # single double value occurring in the first project year
+|           +-- transportation.onroad.diesel.PMUnder2.5um_tonnes  # single double value occurring in the first project year
+|           +-- transportation.onroad.diesel.BC_tonnes            # single double value occurring in the first project year
+|           +-- transportation.onroad.diesel.SO2_tonnes           # single double value occurring in the first project year
+|           +-- transportation.onroad.diesel.VOC_tonnes           # single double value occurring in the first project year
+|           +-- transportation.offroad.diesel.CO2_tonnes          # single double value occurring in the first project year
+|           +-- transportation.offroad.diesel.CO_tonnes           # single double value occurring in the first project year
+|           +-- transportation.offroad.diesel.N2O_tonnes          # single double value occurring in the first project year
+|           +-- transportation.offroad.diesel.CH4_tonnes          # single double value occurring in the first project year
+|           +-- transportation.offroad.diesel.NOx_tonnes          # single double value occurring in the first project year
+|           +-- transportation.offroad.diesel.PMUnder10um_tonnes  # single double value occurring in the first project year
+|           +-- transportation.offroad.diesel.PMUnder2.5um_tonnes # single double value occurring in the first project year
+|           +-- transportation.offroad.diesel.BC_tonnes           # single double value occurring in the first project year
+|           +-- transportation.offroad.diesel.SO2_tonnes          # single double value occurring in the first project year
+|           +-- transportation.offroad.diesel.VOC_tonnes          # single double value occurring in the first project year
+|           +-- transportation.onroad.diesel.distance_km          # single double value representing distance to Nearest power plant
+|        +-- CandP_green_chip                                     # Collection and processing emissions for high moisture, chipping comminution, and large project (>= 1,000 BDT and >= 13 BDT per acre)
 |           +-- ... identical structure as CandP_dry_grind
-|        +-- CandP_green_grind                                      # Collection and processing emissions for high moisture, grind comminution, and large project (>= 1,000 BDT and >= 13 BDT per acre
+|        +-- CandP_green_grind                                    # Collection and processing emissions for high moisture, grind comminution, and large project (>= 1,000 BDT and >= 13 BDT per acre)
 |           +-- ... identical structure as CandP_dry_grind
-|        +-- CandP_low                                              # Collection and processing emissions for low moisture, grind comminution, and small project (< 1,000 BDT or < 13 BDT per acre
+|        +-- CandP_low                                            # Collection and processing emissions for low moisture, grind comminution, and small project (< 1,000 BDT or < 13 BDT per acre)
 |           +-- ... identical structure as CandP_dry_grind
 |     +-- PP
-|        +-- Nearest
-|           +-- plant.type
-|           +-- plant_location
-|           +-- pp_residue_delivered_tonnes
-|           +-- pp_residue_burned_tonnes
-|           +-- pp_waste_flyash_ash_tonnes
-|           +-- pp_storage.CH4_tonnes
-|           +-- pp_storage.CO2_tonnes
-|           +-- pp_energy.production_MWh
-|           +-- pp_energy.production_CogenMMBtu
-|           +-- pp_residue.burned.to.cogen.heat_tonnes
-|           +-- ng_off_CO2_tonnes
-|           +-- ng_off_CO_tonnes
-|           +-- ng_off_CH4_tonnes
-|           +-- ng_off_NOx_tonnes
-|           +-- ng_off_N2O_tonnes
-|           +-- ng_off_PMUnder2.5um_tonnes
-|           +-- ng_off_SO2_tonnes
-|           +-- ng_off_VOC_tonnes
-|           +-- ng_off_BC_tonnes
-|           +-- pp_waste_flyash_char.tonnes
-|           +-- pp_electricity.CO_tonnes
-|           +-- pp_electricity.N2O_tonnes
-|           +-- pp_electricity.CH4_tonnes
-|           +-- pp_electricity.VOC_tonnes
-|           +-- pp_electricity.NOx_tonnes
-|           +-- pp_electricity.SO2_tonnes
-|           +-- pp_electricity.PMUnder10um_tonnes
-|           +-- pp_electricity.PMUnder2.5um_tonnes
-|           +-- pp_electricity.CO2_tonnes
-|           +-- pp_electricity.BC_tonnes
-|        +-- CurrentGenCombustionPlantDefault
+|        +-- Nearest                                              # Emissions associated with combustion of mobilized material in the nearest powerplant
+|           +-- plant.type                                        # Vector specifying power plant technology (projects over very large areas can send portion of material to different plants).
+|           +-- plant_location                                    # Vector of names of existing power plants (projects over very large areas can send portion of material to different plants).
+|           +-- pp_residue_delivered_tonnes                       # single double value occurring in the first project year
+|           +-- pp_residue_burned_tonnes                          # single double value occurring in the first project year
+|           +-- pp_waste_flyash_ash_tonnes                        # single double value occurring in the first project year
+|           +-- pp_storage.CH4_tonnes                             # single double value occurring in the first project year
+|           +-- pp_storage.CO2_tonnes                             # single double value occurring in the first project year
+|           +-- pp_energy.production_MWh                          # single double value occurring in the first project year
+|           +-- pp_energy.production_CogenMMBtu                   # single double value occurring in the first project year
+|           +-- pp_residue.burned.to.cogen.heat_tonnes            # single double value occurring in the first project year
+|           +-- ng_off_CO2_tonnes                                 # estimated natural gas offset by Cogen. Single double value occurring in the first project year
+|           +-- ng_off_CO_tonnes                                  # estimated natural gas offset by Cogen. Single double value occurring in the first project year
+|           +-- ng_off_CH4_tonnes                                 # estimated natural gas offset by Cogen. Single double value occurring in the first project year
+|           +-- ng_off_NOx_tonnes                                 # estimated natural gas offset by Cogen. Single double value occurring in the first project year
+|           +-- ng_off_N2O_tonnes                                 # estimated natural gas offset by Cogen. Single double value occurring in the first project year
+|           +-- ng_off_PMUnder2.5um_tonnes                        # estimated natural gas offset by Cogen. Single double value occurring in the first project year
+|           +-- ng_off_SO2_tonnes                                 # estimated natural gas offset by Cogen. Single double value occurring in the first project year
+|           +-- ng_off_VOC_tonnes                                 # estimated natural gas offset by Cogen. Single double value occurring in the first project year
+|           +-- ng_off_BC_tonnes                                  # estimated natural gas offset by Cogen. Single double value occurring in the first project year
+|           +-- pp_waste_flyash_char.tonnes                       # single double value occurring in the first project year
+|           +-- pp_electricity.CO_tonnes                          # single double value occurring in the first project year
+|           +-- pp_electricity.N2O_tonnes                         # single double value occurring in the first project year
+|           +-- pp_electricity.CH4_tonnes                         # single double value occurring in the first project year
+|           +-- pp_electricity.VOC_tonnes                         # single double value occurring in the first project year
+|           +-- pp_electricity.NOx_tonnes                         # single double value occurring in the first project year
+|           +-- pp_electricity.SO2_tonnes                         # single double value occurring in the first project year
+|           +-- pp_electricity.PMUnder10um_tonnes                 # single double value occurring in the first project year
+|           +-- pp_electricity.PMUnder2.5um_tonnes                # single double value occurring in the first project year
+|           +-- pp_electricity.CO2_tonnes                         # single double value occurring in the first project year
+|           +-- pp_electricity.BC_tonnes                          # single double value occurring in the first project year
+|        +-- CurrentGenCombustionPlantDefault                     # Emissions associated with combustion of mobilized material in a current generation generic combustion plant
 |           +-- ... identical structure as Nearest
-|        +-- CurrentGenIG/CombustionPlantDefault
+|        +-- CurrentGenIG/CombustionPlantDefault                  # Emissions associated with combustion of mobilized material in a current generation generic integrated gasification and combustion plant
 |           +-- ... identical structure as Nearest
-|        +-- NextGenThermochemicalPlantDefault
+|        +-- NextGenThermochemicalPlantDefault                    # Emissions associated with combustion of mobilized material in a next generation generic thermochemical plant
 |           +-- ... identical structure as Nearest
-|        +-- LessThan1MWPlant
+|        +-- LessThan1MWPlant                                     # Emissions associated with combustion of mobilized material in a generic small gasification plant
 |           +-- ... identical structure as Nearest
-|     +-- BroadcastBurn
-|           +-- broadcast.burn.CO2_tonnes
-|           +-- broadcast.burn.CO_tonnes
-|           +-- broadcast.burn.CH4_tonnes
-|           +-- broadcast.burn.NOx_tonnes
-|           +-- broadcast.burn.N2O_tonnes
-|           +-- broadcast.burn.PMUnder10um_tonnes
-|           +-- broadcast.burn.PMUnder2.5um_tonnes
-|           +-- broadcast.burn.SO2_tonnes
-|           +-- broadcast.burn.VOC_tonnes
-|           +-- broadcast.burn.BC_tonnes
-|           +-- broadcast.burned.residue_tonnes
-|     +-- PileBurn
-|           +-- pile.burn.CO2_tonnes
-|           +-- pile.burn.CO_tonnes
-|           +-- pile.burn.CH4_tonnes
-|           +-- pile.burn.NOx_tonnes
-|           +-- pile.burn.N2O_tonnes
-|           +-- pile.burn.PMUnder10um_tonnes
-|           +-- pile.burn.PMUnder2.5um_tonnes
-|           +-- pile.burn.SO2_tonnes
-|           +-- pile.burn.VOC_tonnes
-|           +-- pile.burn.BC_tonnes
-|           +-- pile.burned.residue_tonnes
+|     +-- BroadcastBurn                                           # Emissions associated with a prescribed broadcast burn. Will be empty if the particular case does not allow for a prescribed broadcast burn. Broadcast burns only occur in the first year.
+|           +-- broadcast.burn.CO2_tonnes                         # single double value occurring in the first project year
+|           +-- broadcast.burn.CO_tonnes                          # single double value occurring in the first project year
+|           +-- broadcast.burn.CH4_tonnes                         # single double value occurring in the first project year
+|           +-- broadcast.burn.NOx_tonnes                         # single double value occurring in the first project year
+|           +-- broadcast.burn.N2O_tonnes                         # single double value occurring in the first project year
+|           +-- broadcast.burn.PMUnder10um_tonnes                 # single double value occurring in the first project year
+|           +-- broadcast.burn.PMUnder2.5um_tonnes                # single double value occurring in the first project year
+|           +-- broadcast.burn.SO2_tonnes                         # single double value occurring in the first project year
+|           +-- broadcast.burn.VOC_tonnes                         # single double value occurring in the first project year
+|           +-- broadcast.burn.BC_tonnes                          # single double value occurring in the first project year
+|           +-- broadcast.burned.residue_tonnes                   # single double value of total mass of residue burned in a broadcast burn
+|     +-- PileBurn                                                # Emissions associated with a prescribed pile burn. Will be empty if the particular case does not allow for a prescribed pile burn. Pile burns only occur in the first year.
+|           +-- pile.burn.CO2_tonnes                              # single double value occurring in the first project year
+|           +-- pile.burn.CO_tonnes                               # single double value occurring in the first project year
+|           +-- pile.burn.CH4_tonnes                              # single double value occurring in the first project year
+|           +-- pile.burn.NOx_tonnes                              # single double value occurring in the first project year
+|           +-- pile.burn.N2O_tonnes                              # single double value occurring in the first project year
+|           +-- pile.burn.PMUnder10um_tonnes                      # single double value occurring in the first project year
+|           +-- pile.burn.PMUnder2.5um_tonnes                     # single double value occurring in the first project year
+|           +-- pile.burn.SO2_tonnes                              # single double value occurring in the first project year
+|           +-- pile.burn.VOC_tonnes                              # single double value occurring in the first project year
+|           +-- pile.burn.BC_tonnes                               # single double value occurring in the first project year
+|           +-- pile.burned.residue_tonnes                        # single double value of total mass of residue burned in a pile burn
 |  +-- postTreatment
-|     +-- In.field.non.char.scattered_tonnes
-|     +-- In.field.non.char.piled_tonnes
-|     +-- In.field.char.scattered_tonnes
-|     +-- In.field.char.piled_tonnes
-|     +-- wildfire.burned.residue_tonnes
-|     +-- decayed.residue_tonnes
-|     +-- wildfire.CO2_tonnes
-|     +-- wildfire.CO_tonnes
-|     +-- wildfire.CH4_tonnes
-|     +-- wildfire.NOx_tonnes
-|     +-- wildfire.N2O_tonnes
-|     +-- wildfire.PMUnder10um_tonnes
-|     +-- wildfire.PMUnder2.5um_tonnes
-|     +-- wildfire.SO2_tonnes
-|     +-- wildfire.VOC_tonnes
-|     +-- wildfire.BC_tonnes
-|     +-- decay.CO2_tonnes
-|     +-- decay.CH4_tonnes
+|     +-- In.field.non.char.scattered_tonnes                      # 100-element vector of doubles representing mass of non-char scattered material at the beginning of each year, prior to exposure to prescribed burn (first year only), decay and wildfire.
+|     +-- In.field.non.char.piled_tonnes                          # 100-element vector of doubles representing mass of non-char piled material at the beginning of each year, prior to exposure to prescribed burn (first year only), decay and wildfire. May contain zeros if the case ID does not allow any piled material.
+|     +-- In.field.char.scattered_tonnes                          # 100-element vector of doubles representing mass of char from combustion of scattered material after prescribed burn (first year only) and wildfire.
+|     +-- In.field.char.piled_tonnes                              # 100-element vector of doubles representing mass of char from combustion of piled material after prescribed burn (first year only) and wildfire. May contain zeros if the case ID does not allow any piled material.
+|     +-- wildfire.burned.residue_tonnes                          # 100-element vector of doubles representing mass of residue exposed to wildfire (pre-combustion) after prescribed burn (first year only) and exposure to decay.
+|     +-- decayed.residue_tonnes                                  # 100-element vector of doubles representing mass of residue lost to decay after prescribed burn (first year only) but before exposure to wildfire.
+|     +-- wildfire.CO2_tonnes                                     # 100-element vector of doubles
+|     +-- wildfire.CO_tonnes                                      # 100-element vector of doubles
+|     +-- wildfire.CH4_tonnes                                     # 100-element vector of doubles
+|     +-- wildfire.NOx_tonnes                                     # 100-element vector of doubles
+|     +-- wildfire.N2O_tonnes                                     # 100-element vector of doubles
+|     +-- wildfire.PMUnder10um_tonnes                             # 100-element vector of doubles
+|     +-- wildfire.PMUnder2.5um_tonnes                            # 100-element vector of doubles
+|     +-- wildfire.SO2_tonnes                                     # 100-element vector of doubles
+|     +-- wildfire.VOC_tonnes                                     # 100-element vector of doubles
+|     +-- wildfire.BC_tonnes                                      # 100-element vector of doubles
+|     +-- decay.CO2_tonnes                                        # 100-element vector of doubles
+|     +-- decay.CH4_tonnes                                        # 100-element vector of doubles
 +-- <case ID>
-|   ...
+|   +-- ... above structure replicated for the next case ID
++-- ... repeat for all case IDs that are specified for the run
 ```
 
 Outputs from the `run_CBREC-LCA.R` script are then used as inputs to the `run_post-processing.R` script. The output structure of the `run_post-processing.R` script is scenario-based:
 ```
 +-- <use case ID> x <reference case ID>
-|  +-- use
+|  +-- use                                              # Results associated with the use case, represented by <use case ID> in list name
 |     +-- MT_Residue_Mobilized
 |     +-- MT_Residue_Mobilized_perAcre
 |     +-- MT_Residue_Delivered
 |     +-- MT_Residue_Burned
 |     +-- MWh_Generated
 |     +-- CO2.mass
-|        +-- pp_storage.CO2_tonnes
-|        +-- pp_electricity.CO2_tonnes
-|        +-- collection.processing.diesel.CO2_tonnes
-|        +-- transportation.onroad.diesel.CO2_tonnes
-|        +-- transportation.offroad.diesel.CO2_tonnes
-|        +-- wildfire.CO2_tonnes
-|        +-- decay.CO2_tonnes
-|        +-- total.CO2_tonnes
+|        +-- pp_storage.CO2_tonnes                      # 100-element vector of doubles
+|        +-- pp_electricity.CO2_tonnes                  # 100-element vector of doubles
+|        +-- collection.processing.diesel.CO2_tonnes    # 100-element vector of doubles
+|        +-- transportation.onroad.diesel.CO2_tonnes    # 100-element vector of doubles
+|        +-- transportation.offroad.diesel.CO2_tonnes   # 100-element vector of doubles
+|        +-- wildfire.CO2_tonnes                        # 100-element vector of doubles
+|        +-- decay.CO2_tonnes                           # 100-element vector of doubles
+|        +-- total.CO2_tonnes                           # 100-element vector of doubles
 |     +-- CH4.mass
-|        +-- 
+|        +-- identical structure as CO2.mass
 |     +-- N2O.mass
+|        +-- identical structure as CO2.mass, except no value for pp_storage or decay
 |     +-- PM2.5.mass
+|        +-- identical structure as CO2.mass, except no value for pp_storage or decay
 |     +-- CO.mass
+|        +-- identical structure as CO2.mass, except no value for pp_storage or decay
 |     +-- NOx.mass
+|        +-- identical structure as CO2.mass, except no value for pp_storage or decay
 |     +-- PM10.mass
+|        +-- identical structure as CO2.mass, except no value for pp_storage or decay
 |     +-- VOC.mass
+|        +-- identical structure as CO2.mass, except no value for pp_storage or decay
 |     +-- SO2.mass
+|        +-- identical structure as CO2.mass, except no value for pp_storage or decay
 |     +-- BC.mass
+|        +-- identical structure as CO2.mass, except no value for pp_storage or decay
 |     +-- char.mass
+|        +-- identical structure as CO2.mass, except no value for pp_storage or decay
 |     +-- CO2.AGWP
+|        +-- pp_storage.CO2_W_m2                        # 100-element vector of doubles
+|        +-- pp_electricity.CO2_W_m2                    # 100-element vector of doubles
+|        +-- collection.processing.diesel.CO2_W_m2      # 100-element vector of doubles
+|        +-- transportation.onroad.diesel.CO2_W_m2      # 100-element vector of doubles
+|        +-- transportation.offroad.diesel.CO2_W_m2     # 100-element vector of doubles
+|        +-- wildfire.CO2_W_m2                          # 100-element vector of doubles
+|        +-- decay.CO2_W_m2                             # 100-element vector of doubles
+|        +-- total.CO2_W_m2                             # 100-element vector of doubles
 |     +-- CH4.AGWP
+|        +-- identical structure as CO2.AGWP
 |     +-- N2O.AGWP
+|        +-- identical structure as CO2.AGWP, except no value for pp_storage or decay
 |     +-- CO2.AGTP
+|        +-- pp_storage.CO2_K                           # 100-element vector of doubles
+|        +-- pp_electricity.CO2_K                       # 100-element vector of doubles
+|        +-- collection.processing.diesel.CO2_K         # 100-element vector of doubles
+|        +-- transportation.onroad.diesel.CO2_K         # 100-element vector of doubles
+|        +-- transportation.offroad.diesel.CO2_K        # 100-element vector of doubles
+|        +-- wildfire.CO2_K                             # 100-element vector of doubles
+|        +-- decay.CO2_K                                # 100-element vector of doubles
+|        +-- total.CO2_K                                # 100-element vector of doubles
 |     +-- CH4.AGTP
+|        +-- identical structure as CO2.AGTP
 |     +-- N2O.AGTP
-|     +-- CO2e.AGWP.###yr_MT
-|     +-- CO2e.AGTP.###yr_MT
-|  +-- ref
-|     +-- 
-|  +-- net
+|        +-- identical structure as CO2.AGTP, except no value for pp_storage or decay
+|     +-- CO2e.AGWP.###yr_MT                            # single double value, where "###" is the time horizon in years specified by the user.
+|     +-- CO2e.AGTP.###yr_MT                            # single double value, where "###" is the time horizon in years specified by the user.
+|  +-- ref                                              # Results associated with the reference case, represented by <ref case ID> in list name
+|     +-- identical structure as use
+|  +-- net                                              # Results associated with the use case minus the reference case
+|     +-- net.mass
+|        +-- net.CO2_tonnes                             # 100-element vector of doubles
+|        +-- net.CH4_tonnes                             # 100-element vector of doubles
+|        +-- net.N2O_tonnes                             # 100-element vector of doubles
+|        +-- net.PM2.5_tonnes                           # 100-element vector of doubles
+|        +-- net.CO_tonnes                              # 100-element vector of doubles
+|        +-- net.NOx_tonnes                             # 100-element vector of doubles
+|        +-- net.PM10_tonnes                            # 100-element vector of doubles
+|        +-- net.VOC_tonnes                             # 100-element vector of doubles
+|        +-- net.SO2_tonnes                             # 100-element vector of doubles
+|        +-- net.BC_tonnes                              # 100-element vector of doubles
+|        +-- net.char_tonnes                            # 100-element vector of doubles
+|        +-- net.CO2_W_m2                               # 100-element vector of doubles, net AGWP profile
+|        +-- net.CH4_W_m2                               # 100-element vector of doubles, net AGWP profile
+|        +-- net.N2O_W_m2                               # 100-element vector of doubles, net AGWP profile
+|        +-- net.CO2_K                                  # 100-element vector of doubles, net AGTP profile
+|        +-- net.CH4_K                                  # 100-element vector of doubles, net AGTP profile
+|        +-- net.N2O_K                                  # 100-element vector of doubles, net AGTP profile
+|     +-- net.CO2e.AGWP.###yr_MT                        # single double value, where "###" is the time horizon in years specified by the user.
+|     +-- net.CO2e.AGTP.###yr_MT                        # single double value, where "###" is the time horizon in years specified by the user.
 ```
 
 ### Versioning
