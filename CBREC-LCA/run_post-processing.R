@@ -27,7 +27,10 @@
 # An individual list for each polygon/THP/tile that contains
 # lists of reference cases. Within each reference case list contains all relevant
 # scenarios in the climate matric output format
-# 
+#
+
+# Set working directory
+setwd("/media/spin/Github/CBREC") # Automate this with gregexpr() and substr()
 
 # Source functions ----------------------------
 source("CBREC-LCA/functions/post-processing-functions.R")

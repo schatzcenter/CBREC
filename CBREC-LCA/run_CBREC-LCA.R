@@ -47,9 +47,7 @@
 #    This runs each year of the model for the wildfire and decay
 #
 # Currently outputs a single file as a nested list of each polygon with all specified cases
-#
-# A more detailed illustration of this data strucutre is available on Github at:
-# https://github.com/schatzcenter/CBREC-LCA/tree/develop
+# A more detailed illustration of this data structure is available on Github
 #________________________________________________________________________________________________________
 
 ##############################################

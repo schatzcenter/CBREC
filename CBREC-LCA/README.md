@@ -395,6 +395,12 @@ Release versions (on GitHub and Zenodo) will always correlate. Furthermore, the 
 
 ### Acknowledgments
 
-* <list acknowledgments>
+* The authors would like to thank the California Energy Commission's (CEC) Electric Program Investment Charge (EPIC) program for its support of this research under contract EPC-16-047, and in particular Commission Agreement Managers Katharina Gerber and David Stoms for their indispensable assistance. The C-BREC Model would not have been possible without the contributions and commitment of the following members and organizations:
+  - Schatz Energy Research Center: Cassidy Barrientos, Max Blasdel, Carisse Geronimo, Andrew Harris, Chih-Wei Hsu, Sabrinna Rios-Romero, and Mark Severy.
+  - Humboldt State University Department of Forestry and Wildland Resources: Jeff Kane and Micah Wright
+  - Natural Resource Spatial Informatics Group: Luke Rogers and Jeff Comnick
+  - Consortium for Research on Renewable Industrial Materials: Elaine Oneil and Maureen Puettmann
 
-* This project was funded by the California Energy Commission's (CEC) Electric Program Investment Charge (EPIC) program under contract agreement EPC-16-047. DISCLAIMER: This source code was prepared as the result of work sponsored by the California Energy Commission. It does not necessarily represent the views of the CEC, its employees, or the State of California. The CEC, the State of California, its employees, contractors, and subcontractors make no warrant, express or implied, and assume no legal liability for the information in this report; nor does any party represent that the uses of this information will not infringe upon privately owned rights. This report has not been approved or disapproved by the California Energy Commission, nor has the California Energy Commission passed upon the accuracy or adequacy of the information in this report.
+* This research was much improved by the ongoing input and support of the members of our Technical Advisory Committee and in particular of its chair, Andrea Tuttle.
+
+* DISCLAIMER: This source code was prepared as the result of work sponsored by the California Energy Commission (CEC). It does not necessarily represent the views of the CEC, its employees, or the State of California. The CEC, the State of California, its employees, contractors, and subcontractors make no warrant, express or implied, and assume no legal liability for the information in this report; nor does any party represent that the uses of this information will not infringe upon privately owned rights. This report has not been approved or disapproved by the California Energy Commission, nor has the California Energy Commission passed upon the accuracy or adequacy of the information in this report.
