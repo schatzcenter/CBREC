@@ -21,6 +21,7 @@ Download or fork the repository from [github.com/SchatzCenter/CBREC](https://git
 The file structure consists of the following: 
 
 ```
+CBREC              # Main model directory
 +-- CBREC-Fire     # Directory containing the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire)
 +-- CBREC-LCA      # Directory containing the [C-BREC LCA Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-LCA)
 +-- common-inputs  # Directory containing .csv files of case definitions and cases to run used by both modules
@@ -59,27 +60,31 @@ Packages can be installed as follows:
 install.packages("data.table")
 ```
 
-Other packages and software are required to reproduce the entire project. Packages are loaded at the beginning of every script where possible. All scripts have a description header.
+### Input Data Requirements
+
+A substantial amount of input data is necessary to run the C-BREC Model. Find a snapshot of this release at ??? which includes the input data necessary.
 
 ## Summary Overview
 
-Text
+The C-BREC Model is designed as two separate modules: C-BREC Fire Module and C-BREC LCA Module.
+* C-BREC Fire: this module calculates emissions from in-field combustion of forest residues via prescribed burn and wildfire. The outputs from this module are used as inputs to the C-BREC LCA Module. This module is designed to only be run once, regardless of the number of times the C-BREC LCA module is run.
+* C-BREC LCA: this module calculates gross emissions for a variety of cases as specified by the user, and net emissions for a variety of scenarios defined by combinations of individual cases. This module calculates both mass of greenhouse gas and criteria pollutants emitted, and normalized carbon dioxide equivalent (CO2e) using global warming potential and global temperature potential.
 
 ## Usage
 
-Text
-
-## What it does
-
-Text
+First run the C-BREC Fire Module, then run the C-BREC LCA Module. See documentation for each module for additional details.
 
 ## Output description
 
-Text
+See documentation for each module for details on outputs.
 
 ## Versioning
 
-We use [git](https://git-scm.com/) for version control on this project. For a complete history, see the [this repository](https://github.com/SchatzCenter/CBREC). 
+We use [git](https://git-scm.com/) for version control on this project. For a complete history, see the [this repository](https://github.com/SchatzCenter/CBREC).
+
+Code releases are manually archived and assigned a DOI using [Zenodo](https://zenodo.org) in order to enable uploading of the large input data sets that cannot be stored on GitHub. The latest DOI badge is included on the repository page.
+
+Release versions (on GitHub and Zenodo) will always correlate. Furthermore, the release version will always correlate with the framework documentation version this is included in this repository.
 
 ## Authors
 

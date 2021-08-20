@@ -88,8 +88,6 @@ Packages can be installed as follows:
 install.packages("data.table")
 ```
 
-Other packages and software are required to reproduce the entire project. Packages are loaded at the beginning of every script where possible. All scripts have a description header.
-
 ### Input Data
 
 All static input data required to run C-BREC LCA Module can be downloaded at one of the DOI links below (choose the correct DOI for the version you are running):
@@ -109,6 +107,8 @@ There are two steps to running the C-BREC LCA Module:
 #### Executing `run_CBREC-LCA.R`
 
 The main model script generates 100 year time series of gross emissions for each specified case, disaggregated by source and emission species. The following steps describe how to execute this script.
+
+0. If it hasn't already been downloaded, download the necessary input data. See the [parent README.md](https://github.com/schatzcenter/CBREC) for details.
 
 1. If it hasn't already been run, make sure to run the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire) first. The output from the C-BREC Fire Module is a required input for this module. The C-BREC Fire Module only needs to be run once because it generates results for the entire State of California.
 
@@ -384,10 +384,6 @@ Outputs from the `run_CBREC-LCA.R` script are then used as inputs to the `run_po
 ### Versioning
 
 We use [git](https://git-scm.com/) for version control on this project. For a complete history, see the [this repository](https://github.com/SchatzCenter/CBREC).
-
-Code releases are automatically archived and assigned a DOI using [Zenodo](https://zenodo.org). The latest DOI badge is included on the repository page.
-
-Release versions (on GitHub and Zenodo) will always correlate. Furthermore, the release version will always correlate with the framework documentation version this is included in this repository.
 
 ### Authors
 
