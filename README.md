@@ -10,7 +10,7 @@ The [California Biomass Residue Emissions Characterization (C-BREC) Model](https
 * Reference fate of unremoved biomass (prescribed burn or left in place)
 * Supply chain characteristics
 
-Additional methodological documentation can be found on the C-BREC Model website. The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
+Additional methodological documentation can be found on the C-BREC Model website. The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/) and maintained by the [Schatz Energy Research Center](https://schatzcenter.org/cbrec). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
 
 ## Installation
 
@@ -18,11 +18,17 @@ Download or fork the repository from [github.com/SchatzCenter/CBREC](https://git
 
 ## File Structure
 
-The file structure is shown in the following tree. 
+The file structure consists of the following: 
 
 ```
-File structure to be filled in
++-- CBREC-Fire     # Directory containing the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire)
++-- CBREC-LCA      # Directory containing the [C-BREC LCA Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-LCA)
++-- common-inputs  # Directory containing .csv files of case definitions and cases to run used by both modules
++-- LICENSE        # Software license file (variant of the LBNL BSD-3 license)
++-- README.md      # This readme
 ```
+
+See documentation for each module for additional information.
 
 ## Prerequisites
 
@@ -35,13 +41,17 @@ To run the main scenario_emissions function, the following is required:
 * A current version of R
 * A current version of Rstudio
 * The following R packages and their dependencies:
-        - future.apply 
-        - data.table
-        - sf 
+  - data.table
+  - future.apply
+  - optparse
+  - raster
+  - sf
+  - tictoc
 * The CBREC Rstudio project folder, including CBREC-Fire, CBREC-LCA, and associated inputs to each.
-* At least 24 logical CPU cores at >2GHz each for a barely tolerable run time (month-scale), more is better.
-* At least 160GB RAM, more is required for higher CPU core count.
-* At least 4TB storage. This is completely dependent on the spatial resolution and extent of the run. 4TB is for a statewide run with fire emissions resolution of 200 acres and LCA emissions resolution at sub-ecoregion scale.
+* The following minimum recommended resources for flexibility in spatial resolution and extent of the intended run. Note that required resources are dictated by the spatial resolution (the size of the individual project(s) being run) and the spatial extent (the fraction of the area of the State of California) chosen by the user. The following are based on running a large number of projects (10^4 or more) or a statewide run at low spatial resolution (50+ regions).
+  * At least 24 logical CPU cores at >2GHz each. This results in a roughly 1 month runtime.
+  * At least 160GB RAM, more is required for higher CPU core count.
+  * At least 4TB storage to support both the total size of input data and total size of output data. This is not thoroughly tested. More storage is better.
         
 Packages can be installed as follows:
 
@@ -73,14 +83,22 @@ We use [git](https://git-scm.com/) for version control on this project. For a co
 
 ## Authors
 
-* Andy Harris (Lead Author) - [Schatz Energy Research Center](https://schatzcenter.org)
-* [Jerome Qiriazi](https://github.com/jqiriazi) (Project Manager) - [Schatz Energy Research Center](https://schatzcenter.org)
+* Andy Harris - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Micah Wright](https://github.com/wrightmicahc) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/) and [Schatz Energy Research Center](https://schatzcenter.org)
 * [Max Blasdel](https://github.com/mxblsdl) - [Schatz Energy Research Center](https://schatzcenter.org)
-* [Micah Wright](https://github.com/wrightmicahc) - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Jerome Qiriazi](https://github.com/jqiriazi) (Project Manager) - [Schatz Energy Research Center](https://schatzcenter.org)
 * Chih-Wei Hsu - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Jeff Kane](https://fwr.humboldt.edu/people/jeffrey-kane) (Corresponding Author) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/)
 
 ## Acknowledgments
 
-* <list acknowledgments>
+* The authors would like to thank the California Energy Commission's (CEC) Electric Program Investment Charge (EPIC) program for its support of this research under contract EPC-16-047, and in particular Commission Agreement Managers Katharina Gerber and David Stoms for their indispensable assistance. The C-BREC Model would not have been possible without the contributions and commitment of the following members and organizations:
+  - Schatz Energy Research Center: Cassidy Barrientos, Carisse Geronimo, Sabrinna Rios-Romero, and Mark Severy
+  - Natural Resource Spatial Informatics Group: Luke Rogers and Jeff Comnick
+  - Consortium for Research on Renewable Industrial Materials: Elaine Oneil and Maureen Puettmann
 
-* This project was funded by the California Energy Commission's (CEC) Electric Program Investment Charge (EPIC) program under contract agreement EPC-16-047. DISCLAIMER: This source code was prepared as the result of work sponsored by the California Energy Commission. It does not necessarily represent the views of the CEC, its employees, or the State of California. The CEC, the State of California, its employees, contractors, and subcontractors make no warrant, express or implied, and assume no legal liability for the information in this report; nor does any party represent that the uses of this information will not infringe upon privately owned rights. This report has not been approved or disapproved by the California Energy Commission, nor has the California Energy Commission passed upon the accuracy or adequacy of the information in this report.
+* This research was much improved by the ongoing input and support of the members of our Technical Advisory Committee and in particular of its chair, Andrea Tuttle.
+
+* The R consume scripts were originally translated directly into R from the original python code from [Consume 4.2](https://www.fs.fed.us/pnw/fera/fft/consumemodule.shtml), a component of [Fuel and Fire Tools](https://www.fs.fed.us/pnw/fera/fft/index.shtml).
+
+* DISCLAIMER: This source code was prepared as the result of work sponsored by the California Energy Commission (CEC). It does not necessarily represent the views of the CEC, its employees, or the State of California. The CEC, the State of California, its employees, contractors, and subcontractors make no warrant, express or implied, and assume no legal liability for the information in this report; nor does any party represent that the uses of this information will not infringe upon privately owned rights. This report has not been approved or disapproved by the California Energy Commission, nor has the California Energy Commission passed upon the accuracy or adequacy of the information in this report.

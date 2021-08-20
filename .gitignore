@@ -50,3 +50,7 @@ CBREC-Fire/output
 # CBREC-LCA input and output data
 CBREC-LCA/input
 CBREC-LCA/output
+
+# Misc
+CBREC-Framework_v1.2.1.pdf
+*.zip.*

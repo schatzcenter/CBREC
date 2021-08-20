@@ -29,6 +29,7 @@ Download or fork the repository from [github.com/SchatzCenter/CBREC](https://git
 The file structure is shown in the following tree. 
 
 ```
+CBREC-LCA                          # Main module directory
 +-- CBREC-LCA_input_filepaths.csv  # Contains file paths to all required inputs for the
 |                                  # `run_CBREC-LCA.R` script. Note that some inputs point to the
 |                                  # C-BREC Fire Module file structure.
@@ -69,9 +70,12 @@ The following is required:
 
 * A current version of R
 * The following R packages and their dependencies:
-        - future.apply 
         - data.table
-        - sf 
+        - future.apply
+        - optparse
+        - raster
+        - sf
+        - tictoc
 * The CBREC project folder, including CBREC-Fire, CBREC-LCA, and associated inputs to each.
 * The following minimum recommended resources for flexibility in spatial resolution and extent of the intended run. Note that required resources are dictated by the spatial resolution (the size of the individual project(s) being run) and the spatial extent (the fraction of the area of the State of California) chosen by the user. The following are based on running a large number of projects (10^4 or more) or a statewide run at low spatial resolution (50+ regions).
   * At least 24 logical CPU cores at >2GHz each. This results in a roughly 1 month runtime.
@@ -396,8 +400,7 @@ Release versions (on GitHub and Zenodo) will always correlate. Furthermore, the 
 ### Acknowledgments
 
 * The authors would like to thank the California Energy Commission's (CEC) Electric Program Investment Charge (EPIC) program for its support of this research under contract EPC-16-047, and in particular Commission Agreement Managers Katharina Gerber and David Stoms for their indispensable assistance. The C-BREC Model would not have been possible without the contributions and commitment of the following members and organizations:
-  - Schatz Energy Research Center: Cassidy Barrientos, Max Blasdel, Carisse Geronimo, Andrew Harris, Chih-Wei Hsu, Sabrinna Rios-Romero, and Mark Severy.
-  - Humboldt State University Department of Forestry and Wildland Resources: Jeff Kane and Micah Wright
+  - Schatz Energy Research Center: Cassidy Barrientos, Carisse Geronimo, Sabrinna Rios-Romero, and Mark Severy
   - Natural Resource Spatial Informatics Group: Luke Rogers and Jeff Comnick
   - Consortium for Research on Renewable Industrial Materials: Elaine Oneil and Maureen Puettmann
 

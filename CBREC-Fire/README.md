@@ -16,7 +16,7 @@ Download or fork the repository from [github.com/SchatzCenter/CBREC](https://git
 The file structure for the Wildfire and RX burn Emissions Module is shown in the following tree. 
 
 ```
-CBIP                              # main project directory
+CBREC-Fire                        # main module directory
 +-- functions                     # core functions
 |   +-- Consume                   # R translation of subset of Consume 4.2 functions
 +-- input                         # main input data directory 
