@@ -50,9 +50,9 @@ The following is required:
 
 * A current version of R
 * The following R packages and their dependencies:
-        - future.apply 
-        - data.table
-        - sf 
+    - future.apply 
+    - data.table
+    - sf 
 * The CBREC Rstudio project folder, including CBREC-Fire and associated input.
 * At least 24 logical CPU cores at >2GHz each for a reasonable run time, more is better.
 * At least 64GB RAM, more is required for higher CPU core count.
