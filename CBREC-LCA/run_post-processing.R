@@ -6,27 +6,20 @@
 # **********************************************************************
 # VERSION:
 #
-#   2019-08-13: Initialized development
-#   2019-08-28: Initial development done
-#   2021-03-14 (JKC): Large overhaul
+#  1.0    2019-08-13: Initialized development
+#  1.1    2019-08-28: Initial development done
+#  1.2    2021-03-14 (JKC): Large overhaul
+#  1.2.1  2021-08-20: Final cleaning up of comments for public release
 #
 # **********************************************************************
-# ACTION ITEMS:
-# Index   Description                                                      Status
-# 01      Initial development                                              Done
-# 02      Add in visualization component?                                  Abandoned
-#
-# *********************************************************************
-#
-# *********************************************************************
 # INPUTS:
-#   cbrec output case file(s): Read RDS from output folders
+#   run_CREC-LCA.R output case file(s): Read RDS from output folders
 #   Absolute Global Warming Potential (AGWP) and Absolute Global Temperature
 #     Potential (AGTP) matrices: read from input directory
 #
 # *********************************************************************
 # OBJECTIVE:
-# Read in CBREC results, and run the climate metric scripts to
+# Read in run_CBREC-LCA.R results, and run the climate metric scripts to
 # compare reference and use cases
 #
 # *********************************************************************
@@ -35,40 +28,35 @@
 # lists of reference cases. Within each reference case list contains all relevant
 # scenarios in the climate matric output format
 # 
-# rstudioapi::restartSession()
-
-#' @description Contains two functions which output climate metrics
-#' First outputs climate metric totals without a functional unit for each use and reference case
-#' Second takes those outputs and adds a functional unit, calcs a CO2e and pairs use X ref cases
-#' Final outputs(outputs of second function) used to make charts and graphs of outputs
-#' These functions will probably be blueprints for web API functionality
-#' 
-#' Consider combining these two functions to produce a single output...
 
 # Source functions ----------------------------
-source("Post_Processing/CBI_postFunctions.R")
-source("CBREC/functions/climate-metric-functions.R")
+source("CBREC-LCA/functions/post-processing-functions.R")
+source("CBREC-LCA/functions/climate-metric-functions.R")
 
 # Load librarys -------------------------------
 
-# Fully clear all non-base packages that are loaded to avoid "monkey patch" conflicts across packages
+# If desired, uncomment to fully clear all non-base packages that are loaded to avoid "monkey patch" conflicts across packages
 #   Iteratively call unloadPackages() in order to capture packages that couldn't be unloaded because of dependency by other loaded packages
+#' @source Answer by petzi at https://stackoverflow.com/questions/55655162/unload-all-loaded-packages
+# unloadPackages <- function() {
+#   lapply(names(sessionInfo()$otherPkgs), function(pkgs) {
+#     detach(
+#       paste0('package:', pkgs),
+#       character.only = T,
+#       unload = T,
+#       force = T
+#     )
+#   })
+# }
 # unloadErrors <- unloadPackages()
 # while(length(unloadErrors)>0) {
 #   unloadErrors <- unloadPackages()
 # }
 
-# library("magrittr") # guessing this isn't needed
-# library("dplyr") # pipeline data wrangling
-# library("tidyr") # additional tidy functions (expand, ...)
-# library("stringr") # many regex uses
-# library("purrr") # use of map()
 library("data.table") # alternate data structure
 library("future.apply") # parallelization framework
 
-
 # User-defined variables -------------------------------------------------------------
-
 
 # Set parallelization plan
 options(future.fork.enable = T) # allows old method of parallelization with forked 'rsessions'
@@ -76,47 +64,16 @@ plan(multiprocess, workers = 28) # check this value and change if memory concern
 # needs multicore to pass globals at least on windows... this option may be a source of error to watch for
 
 ## Change dirs below to match current machine needs
-dataRootDir <- "CBREC_output/2020_06_harvests/"
-cbrec_results <- paste0(dataRootDir,"results/") # CBREC output files
-
-# Specify functional value(s)
-# Set to NULL if desire to calculate functional value from CBREC outputs
-#functional_value <- NULL
+dataRootDir <- out_folder # Output directory specified in run_CBREC-LCA.R
+cbrec_results <- paste0(dataRootDir,"results/") # run_CBREC-LCA.R output files
 
 # Specify time horizon at which climate metrics will be reported
 th <- list(AGWP = 100,
            AGTP = 100) #year (must be an integer value between 1 and 100)
 
-# Specify the how much the scenarios should expand
-# Silviculture level has 2366 scenarios
-# fraction_piled level has 182 scenarios
-
 # Load Constants and Paths ------------------------------------------------
-# helper function
-metrics_paste <- function(functional_unit, met) {
-  out <- if(is.na(functional_unit)) {
-    paste0("net.", met, "_MT")
-  } else {
-    switch (functional_unit,
-                 "MT_Mobilized" = paste0("net.", met, "_MTperMT_Mobilized"),
-                 "MT_Mobilized_perAcre" = paste0("net.", met, "_MTperMT_Mobilized_perAcre"),
-                 "kWh" = paste0("net.", met, "_MTperkWh"),
-                 "MT_Delivered" = paste0("net.", met, "_MTperMT_Delivered"),
-                 "MT_Burned_inPP" = paste0("net.", met, "_MTperMT_Burned_inPP")
-            )
-  }
-  return(out)
-}
-
-# This is if the past files have already been generated
-# TODO think about combining these steps to reduce intermediate results
-
-# make sure scenario lookup is loaded
-#scenario_lookup <- scenarioExpand(case_matrix, expand_attribute = "fraction_piled")
 
 # Specify functional unit
-#' @note I don't think mt_mobilized_perAcre should be used as a functional unit since nothing else is in perAcre 
-#' # we get really large CO2e values for some of the harvests that are big, lots of residues, lots of emissions, average residue density
 functional_unit <- switch(menu(choices = c("MT Mobilized from Field",
                                             "MT per Acre Mobilized from Field", 
                                             "MT Delivered to Power Plant",
@@ -182,6 +139,9 @@ climate_metric_outputs <- paste0(dataRootDir,
                                  if(!is.na(chosenHaulDist)) {paste0("_",as.character(chosenHaulDist),"km")},
                                  "/",
                                  gsub("-", "_", Sys.Date()), "/") # output from this script
+ifelse(!dir.exists(climate_metric_outputs),
+       dir.create(climate_metric_outputs, recursive = T), # create file path if needed
+       FALSE)
 
 # define climate metric variables used in looping
 cm = list(AGWP = "AGWP",
@@ -192,35 +152,25 @@ cm = list(AGWP = "AGWP",
 
 #Load AGWP scenario matrices
 AGWPMat <- list(
-  CO2 = as.matrix(read.csv("CBREC_input_data/climate_metrics/AGWPScenarioCO2Mat_2020-2-27.csv", header=FALSE)),
-  CH4 = as.matrix(read.csv("CBREC_input_data/climate_metrics/AGWPScenarioCH4Mat_2020-2-27.csv", header=FALSE)),
-  N2O = as.matrix(read.csv("CBREC_input_data/climate_metrics/AGWPScenarioN2OMat_2020-2-27.csv", header=FALSE)))
+  CO2 = as.matrix(read.csv("CBREC-LCA/input/climate_metrics/AGWPScenarioCO2Mat", header=FALSE)),
+  CH4 = as.matrix(read.csv("CBREC-LCA/input/climate_metrics/AGWPScenarioCH4Mat", header=FALSE)),
+  N2O = as.matrix(read.csv("CBREC-LCA/input/climate_metrics/AGWPScenarioN2OMat", header=FALSE)))
 
 #Load AGTP scenario matrices
 AGTPMat <- list(
-  CO2 = as.matrix(read.csv("CBREC_input_data/climate_metrics/AGTPScenarioCO2Mat_2020-6-30.csv", header=FALSE)),
-  CH4 = as.matrix(read.csv("CBREC_input_data/climate_metrics/AGTPScenarioCH4Mat_2020-6-30.csv", header=FALSE)),
-  N2O = as.matrix(read.csv("CBREC_input_data/climate_metrics/AGTPScenarioN2OMat_2020-6-30.csv", header=FALSE)))
+  CO2 = as.matrix(read.csv("CBREC-LCA/input/climate_metrics/AGTPScenarioCO2Mat", header=FALSE)),
+  CH4 = as.matrix(read.csv("CBREC-LCA/input/climate_metrics/AGTPScenarioCH4Mat", header=FALSE)),
+  N2O = as.matrix(read.csv("CBREC-LCA/input/climate_metrics/AGTPScenarioN2OMat", header=FALSE)))
 
 
 # Define the Scenarios ----------------------------------------------------
-scenario_lookup <- as.data.table(read.csv("Post_Processing/Scenario-case-pairings_2020-06-04.csv"))
-scenario_lookup[,(1):=NULL] # Delete index column that was created by write.csv() in generateScenarioCasePairings.Rmd
-
-# Create output directory for outputs ---------------------------------
-ifelse(!dir.exists(climate_metric_outputs),
-       dir.create(climate_metric_outputs, recursive = T), # create file path if needed
-       FALSE)
+scenario_lookup <- as.data.table(read.csv("CBREC-LCA/input/case_definitions/scenario-case-pairings.csv"))
 
 # Find All Data -------------------------------
 
 # find all paths
 poly_list <- dir(cbrec_results, full.names = T)
 
-# REMOVE POLYGON 15530 AS IT IS EVALUATING WITH ZERO MATERIAL. INVESTIGATE LATER
-#poly_list <- poly_list[-grep("*15530",poly_list)]
-
-#poly_i <- poly_list[1]
 # Loop through each data --------------------------------------------------
 # This loop uses a few custom functions for organizing and unpacking the CBREC model outputs.
 # The `cbi_*` functions can be used to process outputs for other purposes as well (ex. Look at proportions of emissions from source)

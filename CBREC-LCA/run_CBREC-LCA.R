@@ -1,22 +1,23 @@
 #!/usr/bin/Rscript --vanilla
 
 #****************************************************************************************
-# AUTHORS: Andrew Harris (andrew.harris@humboldt.edu)
-#        Max Blasdel
-#        Jerome Carman
-#        Chih-Wei Hsu
+# AUTHORS: Andrew Harris
+#          Max Blasdel
+#          Jerome Carman
+#          Chih-Wei Hsu
 # 
-#       Schatz Energy Research Center
-#       Humboldt State University 
+# Schatz Energy Research Center
+# Humboldt State University 
 #____________________________________________________________________________
 # VERSION:
 #
-# 1.0  2019-07-26: Ported from .Rmd to .R command line tool
-# 1.1  2019-09-17: Features added for report analysis
-# 1.12 2020-01-25: Many features added as documented in GitHub, plus significant
-#                  cleanup and re-structuring of some functions
-# 1.2  2020-05-25: Many additional features added as documented on GitHub. Version
-#                  used for LCA Analysis report and statewide run for webtool.
+# 1.0    2019-07-26: Ported from .Rmd to .R command line tool
+# 1.1    2019-09-17: Features added for report analysis
+# 1.1.1  2020-01-25: Some features added as documented in GitHub, plus significant
+#                    cleanup and re-structuring of some functions
+# 1.2    2020-05-25: Many additional features added as documented on GitHub. Version
+#                    used for LCA Analysis report and statewide run for webtool.
+# 1.2.1  2021-08-20: Final cleaning up comments for public release, and very minor edits
 #____________________________________________________________________________
 # OBJECTIVE:
 # This script will run the C-BREC model on input data specified by the user in 
@@ -54,14 +55,14 @@
 ##############################################
 #### LOAD LIBRARIES, FUNCTIONS, CONSTANTS ####
 ##############################################
-setwd("/media/spin/cbi/CBREC-LCA") # Automate this with gregexpr() and substr()
+setwd("/media/spin/Github/CBREC") # Automate this with gregexpr() and substr()
 
 # Libraries ---------------------------------------------
 if(!any(rownames(installed.packages()) %in% "rgdal")) {
   install.packages("rgdal") # rgdal dependency to raster package
 }
 
-# Fully clear all non-base packages that are loaded to avoid "monkey patch" conflicts across packages
+# If desired, uncomment to fully clear all non-base packages that are loaded to avoid "monkey patch" conflicts across packages
 #   Iteratively call unloadPackages() in order to capture packages that couldn't be unloaded because of dependency by other loaded packages
 #' @source Answer by petzi at https://stackoverflow.com/questions/55655162/unload-all-loaded-packages
 # unloadPackages <- function() {
@@ -115,9 +116,10 @@ source("CBREC-LCA/functions/constants.R")
 ##############################################
 
 # Misc user-defined variables --------------------------------------
-seed_val_to_set <- 2 # So sample() produces same result so multiple runs can be compared
+seed_val_to_set <- 2 # Used for debugging so sample() produces same result so multiple runs can be compared
 
-# tiles with no fire data that will cause an error
+# Remove tiles with no fire data that will cause an error
+#   Does not impact results as no fire data means no forested area.
 no_data_tiles <<- gsub(paste0(getwd(),"CBREC-Fire/output/emissions/"),"",
                        system(paste0("find ",getwd(),"CBREC-Fire/output/emissions/ -type d -empty"), intern=T))
 
@@ -179,7 +181,8 @@ if(!dir.exists(out_folder)) {
 }
 
 # Log File and Debugging settings ----------------------------------------------------
-# Initialize log file to catch all warnings, errors, and debugging output
+#   Initialize log file to catch all warnings, errors, and debugging output
+#   Not yet fully implemented throught the code
 log_file <<- file(paste0(out_folder, "runlogs/CBREC-LCA_RunLog_", format(Sys.time(), "%d-%b-%Y_%H-%M"), ".log"), open = 'a')
 cat(paste0("Initializing CBREC-LCA: ",Sys.time(),"\n"), file = log_file)
 cat(paste0("\nUsing the following input arguments:\n",
@@ -195,9 +198,8 @@ cat(paste0("\nUsing the following input arguments:\n",
 ##############################################
 ####       LOAD ALL INPUT DATA            ####
 ##############################################
-#   All user options and filepaths are in an external csv file specified by user_inputs_csv variable
 
-# Load all raw data, or load pre-existing RData to reduce load time
+# Load all raw data, or if desired separately create and load RData to reduce load time
 load_initial_data(user_input_filepath, no_data_tiles)
 
 # Subset list of project polygons if debugging to reduce runtime
@@ -224,11 +226,6 @@ rm(option_list,
 polys_done <- tools::file_path_sans_ext(dir(paste0(out_folder, "/results")))
 all_project_polygons <- all_project_polygons[!names(all_project_polygons) %in% polys_done]
 
-# -------------- REMOVE THIS ---------------
-polyNames <- names(all_project_polygons)
-subsetPolys <- sample(polyNames,980,replace=F)
-all_project_polygons <- all_project_polygons[names(all_project_polygons) %in% subsetPolys]
-
 ##############################################
 ####       START CBREC-LCA MODEL          ####
 ##############################################
@@ -240,9 +237,6 @@ if(debug_CBREC) {
 
 # lapply over project polygons. Within each lapply, lapply over all cases
 polygon_output <- future_lapply(all_project_polygons, function(project_polygon) {
-  
-  # this needs to be set after each Sys.setenv() call, which is initiated by future
-  # data.table::setDTthreads(2)
   
   if(debug_CBREC) {
     cat(paste0("\nRunning project polygon ID ",as.character(project_polygon$OBJECTID),"\n"), file=log_file, append=T)
@@ -447,8 +441,8 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
       invisible(lapply(results_tracker$treatment$CandP, calcBlackCarbon, "offroaddiesel"))
 
       # Power Plant Emissions --------------------------------------------------------------------------
-      # Record mass of residues delivered to power plant
       
+      # Record mass of residues delivered to power plant
       case.data[,mass_to_plant_tonnesAcre := 0] # Initialize
       case.data[,mass_to_plant_tonnesAcre := Recovered_CWD_tonnesAcre + Recovered_FWD_tonnesAcre + Recovered_Foliage_tonnesAcre] # Sum all recovered size classes
       results_tracker$treatment$field.residue.removed_tonnes = sum(case.data[,mass_to_plant_tonnesAcre]) * acres_per_cell # Record mass to plant in tracker
@@ -481,10 +475,6 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
       # Add power plant emissions to results_tracker
       results_tracker$treatment$PP <- pp_output
       
-      # Remove un-needed variables
-      # not needed due to scoping
-      # rm(harPro_dry_grind,harPro_green_chip,harPro_green_grind,harPro_low,pp_output)
-      
     } else { # Explicitly indicate that there are no CandP or PP emissions
       results_tracker$treatment$CandP <- 0
       results_tracker$treatment$PP <- 0
@@ -502,8 +492,7 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
     # Run Loop for each year ---------------------------------------------------------------------------
     for (year.i in seq(1,100,1)) {
       
-      # figure out the data table row num year.i will be on
-      # ARH update 8/21/20: This also changed.
+      # specifiy the row num year.i will be on
       dt_rn <- year.i # for one-year interval, year is the row number
       
       # Calculate amount of scattered and piled residues at the beginning of the year
@@ -580,9 +569,8 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
           # Pile -----------------------------------------------------------------------------------------
           if(debug_CBREC) {
             cat("   Calculating prescribed burn emissions: Pile Burn\n", file=log_file, append=T)
-            cat("\nWARNING: Residues remaining after pile burning are added to COARSE scattered debris - a fire model inconsistency we should fix in version 1.2\n",file=log_file,append=T)
+            cat("\nWARNING: Residues remaining after pile burning are added to COARSE scattered debris - a fire model inconsistency we should fix in a later version\n",file=log_file,append=T)
           }
-          
           
           # Calculate prescribed burn emissions
           prescribed_burn_output <- prescribed_burn_fun(case.data, case$prescribed.burn.type)
@@ -625,16 +613,12 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
           
           if(debug_CBREC) {
             cat("   Calculating prescribed burn emissions: Pile and Broadcast Burn\n", file=log_file, append=T)
-            cat("\nWARNING: Residues remaining after pile burning are added to COARSE scattered debris - a fire model inconsistency we should fix in version 1.2\n",file=log_file,append=T)
+            cat("\nWARNING: Residues remaining after pile burning are added to COARSE scattered debris - a fire model inconsistency we should fix in a later version\n",file=log_file,append=T)
           }
-          
           
           # Calculate broadcast burn emissions first *************************************************************
           #   Pile burning has to happen after broadcast burn, else remaining scattered material post pile burn will be burned a second time.
           prescribed_burn_output <- prescribed_burn_fun(case.data, "Broadcast")
-          
-          # Update the case data with prescribed_burn_output[[3]]
-          #case.data <- prescribed_burn_output[[3]]
           
           # Update the emissions data with prescribed_burn_output[[1]]
           results_tracker$treatment$BroadcastBurn <- data.table(
@@ -700,8 +684,6 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
         } # End prescribed burn emissions calculations
 
       } # end of year 1 calculations
-      
-      # *************************** ANDY LOOK BELOW HERE  *********************************************
       
       # Decay -----------------------------------------------------------------------------------------------------------
       # Note decay_output has the following structure:
@@ -865,6 +847,8 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
 
     } # end of 100 year loop
     if(debug_CBREC) {toc()} # end of time series
+    
+    
     # Return Results -----------------------------------------------------------------------------------
     # Aggregate results to be returned in a list
     #***************************************************************************************************
@@ -872,9 +856,8 @@ polygon_output <- future_lapply(all_project_polygons, function(project_polygon) 
     #                                           results_tracker$postTreatment),
     #                     "year0_mass" = results_tracker$treatment,
     #                     "year0_emissions" = results_tracker$treatment)
-    # Check Output
-    # Seeing some NULL results which cause an error and stop the run
-    # document in the log file
+    
+    # Check output for NULL results and document in the log file
     if(is.null(results_tracker)) {
       cat(paste0("Results NULL for polygon ", poly_num, " and case ", case$ID, "\n"), file = log_file, append = T)
     }
