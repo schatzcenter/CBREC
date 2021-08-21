@@ -92,7 +92,7 @@ install.packages("data.table")
 
 All static input data required to run both the C-BREC Fire Module and the C-BREC LCA Module can be downloaded via Zenodo. See main repository [README.md](https://github.com/schatzcenter/CBREC/tree/master#input-data) for the link. The download preserves the required directory structure. It also includes the code associated with the release correlated to it. If downloading the input data for use in a later release, do not use the R scripts included in the data download.
 
-Note that output from the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire) is also a required input. Hence, the user must first run the C-BREC Fire Module prior to running the C-BREC LCA module. The relative file path for the outputs of the C-BREC Fire Module is specified in the CBREC-LCA_input_filepaths.csv file which is one of the input data files that can be found via the above Zenodo DOI link. See the Usage section below for more details.
+Note that output from the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire) is also a required input. Hence, the user must first run the C-BREC Fire Module prior to running the C-BREC LCA module. The relative file path for the outputs of the C-BREC Fire Module is specified in the CBREC-LCA_input_filepaths.csv file. See the Usage section below for more details.
 
 ### Usage
 
@@ -102,6 +102,8 @@ There are two steps to running the C-BREC LCA Module:
 1. Execute main model script `run_CBREC-LCA.R`
 2. Execute post processing script `run_post-processing.R`
 
+All scripts are designed to be sourced relative to the main CBREC folder.
+
 #### Executing `run_CBREC-LCA.R`
 
 The main model script generates 100 year time series of gross emissions for each specified case, disaggregated by source and emission species. The following steps describe how to execute this script.
@@ -110,40 +112,49 @@ The main model script generates 100 year time series of gross emissions for each
 
 1. If it hasn't already been run, make sure to run the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire) first. The output from the C-BREC Fire Module is a required input for this module. The C-BREC Fire Module only needs to be run once because it generates results for the entire State of California.
 
-2. Create a polygon shapefile that contains the shapes for each project that C-BREC LCA will be run on. The shapefile can contain any number of polygons, thereby allowing a batch run of multiple projects if desired. Furthermore, each shape doesn't necessarily need to represent a project per se. It simply defines a region over which residue mobilization is implemented. For example, the shapefile can contain shapes that divide up the entire State of California into different regions, such as eco-regions.
+2. Create a polygon shapefile that contains the shapes for each project that C-BREC LCA will be run on. There is an example shapefile in the downloadable input data referenced in Step 1 above. The shapefile can contain any number of polygons, thereby allowing a batch run of multiple projects if desired. Furthermore, each shape doesn't necessarily need to represent a project per se. It simply defines a region over which residue mobilization is implemented. For example, the shapefile can contain shapes that divide up the entire State of California into different regions, such as eco-regions.
 
-   Note that there is a script flag `useactivitycodes` (described below) that can be set if the user wishes to specify the type of primary silvacultural treatment that is conducted on each project location. If this is set to true, this requires that the polygon shapefile contain a `treat_code` attribute that contains this definition. The allowed values for `treat_code` are:
+   Note that there is a script flag `useactivitycodes` (described below) that can be set if the user wishes to specify the type of primary silvacultural treatment that is conducted on each project location. If this is set to true, this requires that the polygon shapefile contain a `treat_code` attribute that contains this definition. If this flag is set to false the model will not look for the `treat_code` attribute and will run all possible silvacultural treatments for each polygon in the shapefile. The allowed values for `treat_code` are:
    
-       RM100: Remove 100% of basal area
-       TFA20: Thin from above 20% of basal area
-       TFA40: Thin from above 40% of basal area
-       TFA60: Thin from above 60% of basal area
-       TFA80: Thin from above 80% of basal area
-       TFB20: Thin from below 20% of basal area
-       TFB40: Thin from below 40% of basal area
-       TFB60: Thin from below 60% of basal area
-       TFB80: Thin from below 80% of basal area
-       TFP20: Proportionally thin 20% of basal area
-       TFP40: Proportionally thin 40% of basal area
-       TFP60: Proportionally thin 60% of basal area
-       TFP80: Proportionally thin 80% of basal area
+```
+Clearcut              # Remove 100% of basal area
+20_Thin_From_Above    # Thin from above 20% of basal area
+40_Thin_From_Above    # Thin from above 40% of basal area
+60_Thin_From_Above    # Thin from above 60% of basal area
+80_Thin_From_Above    # Thin from above 80% of basal area
+20_Thin_From_Below    # Thin from below 20% of basal area
+40_Thin_From_Below    # Thin from below 40% of basal area
+60_Thin_From_Below    # Thin from below 60% of basal area
+80_Thin_From_Below    # Thin from below 80% of basal area
+20_Proportional_Thin  # Proportionally thin 20% of basal area
+40_Proportional_Thin  # Proportionally thin 40% of basal area
+60_Proportional_Thin  # Proportionally thin 60% of basal area
+80_Proportional_Thin  # Proportionally thin 80% of basal area
+```
 
 3. Update the CBREC-LCA_input_filepaths.csv file to reflect name and location of the polygon shapefile. Make any other file path updates if needed.
 
 4. Choose whether to execute run_CBREC-LCA.R in an IDE environment (such as RStudio) or at the command line. It is recommended that large batch runs be executed at the command line to avoid IDE overhead consuming additional unnecessary computer resources. Command line flag options are:
 
 ```
--c, --cores             # Specify the number of CPU cores to utilize [default parallel:detectCores()/2]
--d, --debug             # Print extra output for debugging (currently not fully implemented) [default F]
--i, --infile            # Relative path to .csv file specifying inputs [default "CBREC-LCA/input/CBREC-LCA_input_filepaths.csv"]
--o, --outdir            # Relative output directory path [default "Cbrec-LCA/output/default-output-dir/"]
--u, --useactivitycodes  # If running project polygons with specified treatment activity codes, set to T [default F]
--v, --verbose           # Print extra output [default F]
+NAME
+      run_CBREC-LCA.R
+SYNOPSIS
+      run_CBREC-LCA.R [OPTION]...
+DESCRIPTION
+      Execute the C-BREC LCA Module
+      Mandatory arguments to long options are mandatory for short options too
+      -c, --cores             # Specify the number of CPU cores to utilize [default parallel:detectCores()/2]
+      -d, --debug             # Print extra output for debugging (currently not fully implemented) [default F]
+      -i, --infile            # Relative path to .csv file specifying inputs [default "CBREC-LCA/input/CBREC-LCA_input_filepaths.csv"]
+      -o, --outdir            # Relative output directory path [default "Cbrec-LCA/output/default-output-dir/"]
+      -u, --useactivitycodes  # If running project polygons with specified treatment activity codes, set to T [default F]
+      -v, --verbose           # Print extra output [default F]
 ```
 
 #### Executing `run_post-processing.R`
 
-Once `run_CBREC-LCA.R` is finished running, gross emissions for each specified case must be processed to generate net mass of emissions and climate metrics for specified scenarios.
+Once `run_CBREC-LCA.R` is finished running, gross emissions for each specified case must be processed to generate net mass of emissions and climate metrics for specified scenarios. This post processing script is designed to be run in an IDE environment.
 
 ### Output description
 

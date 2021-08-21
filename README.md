@@ -10,7 +10,7 @@ The [California Biomass Residue Emissions Characterization (C-BREC) Model](https
 * Reference fate of unremoved biomass (prescribed burn or left in place)
 * Supply chain characteristics
 
-Additional methodological documentation can be found on the C-BREC Model website. The C-BREC model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/) and maintained by the [Schatz Energy Research Center](https://schatzcenter.org/cbrec). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
+Additional methodological documentation can be found on the [C-BREC Model website](https://schatzcenter.org/cbrec). The C-BREC Model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/) and is maintained by the [Schatz Energy Research Center](https://schatzcenter.org). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
 
 ## Installation
 

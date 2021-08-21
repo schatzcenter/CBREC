@@ -94,7 +94,7 @@ The process for calculating the consumption and emissions for a single tile over
 
 ### Usage
 
-This project is in the Rstudio project format, so all scripts are designed to be sourced relative to the main CBREC folder. The steps to calculate emissions for a single tile are shown below. In this example, emissions and residual (unconsumed) fuel are estimated for a fixed set of scenarios over five time steps over a 100-year period for tile number 300. For ease of use when running on multiple tiles, the run_all function wraps the scenario_emissions function, which in turn wraps all other functions. For efficiency, the scenario_emissions function implements parallel processing using the future.apply package, which is platform independent. 
+All scripts are designed to be sourced relative to the main CBREC folder. The steps to calculate emissions for a single tile are shown below. In this example, emissions and residual (unconsumed) fuel are estimated for a fixed set of scenarios over five time steps over a 100-year period for tile number 300. For ease of use when running on multiple tiles, the run_all function wraps the scenario_emissions function, which in turn wraps all other functions. For efficiency, the scenario_emissions function implements parallel processing using the future.apply package, which is platform independent. 
 
 ```
 source("CBREC-Fire/run_CBREC-Fire.R")
