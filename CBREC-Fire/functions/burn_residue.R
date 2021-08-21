@@ -1,7 +1,7 @@
 ################################################################################
 # This script uses the consume activity equations to estimate the fuel burned 
 # and FEPS/bluesky emissions factors to estimate emissions as part of the
-# California Biopower Impact Project. 
+# C-BREC Fire Module. 
 #
 # dt: input data.table
 # burn_type: None (wildfire), Pile, Broadcast, or Jackpot 

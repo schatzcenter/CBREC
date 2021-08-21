@@ -1,6 +1,6 @@
 ################################################################################
 # This script adds columns to specify the pile load for biomass residue as part
-# of the California Biopower Impact Project. Currently, it is assumed that 
+# of the C-BREC Fire Module. Currently, it is assumed that 
 # foliage is piled along with the branches.
 #
 # dt: input data.table

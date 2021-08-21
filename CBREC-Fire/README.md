@@ -64,6 +64,10 @@ Packages can be installed as follows:
 install.packages("data.table")
 ```
 
+#### Input Data
+
+All static input data required to run both the C-BREC Fire Module and the C-BREC LCA Module can be downloaded via Zenodo. See main repository [README.md](https://github.com/schatzcenter/CBREC/tree/master#input-data) for the link. The download preserves the required directory structure. It also includes the code associated with the release correlated to it. If downloading the input data for use in a later release, do not use the R scripts included in the data download.
+
 ### Summary Overview
 
 The C-BREC Fire Module is designed to generate prescribed burn and wildfire emissions profiles from the combustion of residues only (not including standing trees or merchantable timber, and not including the fuel bed except where explicitly labeled as such). Furthermore, this module is designed to generate results for the entire State of California. In other words, unlike the C-BREC LCA Module, this module is not project based. It is only necessary to run this module once, where as the C-BREC LCA Module is designed to be run numerous times for different inputs.

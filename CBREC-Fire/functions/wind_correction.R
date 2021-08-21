@@ -1,6 +1,6 @@
 ################################################################################
 # This script corrects windspeed for FCCS fuelbeds based on terrain and trees 
-# per acre as part of the  California Biopower Impact Project. 
+# per acre as part of the C-BREC Fire Module.
 # 
 # dt: input data.table
 # Wind: Windspeed column
@@ -57,7 +57,11 @@ wind_correction <- function(dt, Wind, TPA, TPI) {
         if(!("waf" %in% colnames(dt))) {print(paste0("No waf in tile ",
                                                      as.character(unique(dt$Tile_Number)),
                                                      ". Gross residue is ",
-                                                     as.character(dt[,sum(Stem_6t9_tonsAcre,Stem_4t6_tonsAcre,Stem_ge9_tonsAcre,Branch_tonsAcre,Foliage_tonsAcre)])))}
+                                                     as.character(dt[,sum(Stem_6t9_tonsAcre,
+                                                                          Stem_4t6_tonsAcre,
+                                                                          Stem_ge9_tonsAcre,
+                                                                          Branch_tonsAcre,
+                                                                          Foliage_tonsAcre)])))}
         
         # correct windspeed
         dt[, ':=' (Wind_corrected_rx = Wind_rx * waf,

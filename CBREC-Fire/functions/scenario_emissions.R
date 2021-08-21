@@ -1,7 +1,6 @@
 ################################################################################
 # This script uses the scenario and tile number to calculate wildfire emissions
-# at 25 year timesteps over a 100 year period. This is part of the CA Biopower 
-# Impact Project.
+# at 25 year timesteps over a 100 year period. This is part of the C-BREC Fire Module.
 #
 # tile_number: numeric tile number. Must be one of the actual tile numbers
 #

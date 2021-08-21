@@ -88,11 +88,9 @@ Packages can be installed as follows:
 install.packages("data.table")
 ```
 
-### Input Data
+#### Input Data
 
-All static input data required to run C-BREC LCA Module can be downloaded at one of the DOI links below (choose the correct DOI for the version you are running):
-
-* v1.2.1 and later: [![DOI](https://sandbox.zenodo.org/badge/DOI/10.5072/zenodo.899028.svg)](https://doi.org/10.5072/zenodo.899028)
+All static input data required to run both the C-BREC Fire Module and the C-BREC LCA Module can be downloaded via Zenodo. See main repository [README.md](https://github.com/schatzcenter/CBREC/tree/master#input-data) for the link. The download preserves the required directory structure. It also includes the code associated with the release correlated to it. If downloading the input data for use in a later release, do not use the R scripts included in the data download.
 
 Note that output from the [C-BREC Fire Module](https://github.com/schatzcenter/CBREC/tree/master/CBREC-Fire) is also a required input. Hence, the user must first run the C-BREC Fire Module prior to running the C-BREC LCA module. The relative file path for the outputs of the C-BREC Fire Module is specified in the CBREC-LCA_input_filepaths.csv file which is one of the input data files that can be found via the above Zenodo DOI link. See the Usage section below for more details.
 

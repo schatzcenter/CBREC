@@ -1,8 +1,8 @@
 ################################################################################
-# This script decays treatment residues as part of the California Biopower 
-# Impact Project. 
+# This script decays treatment residues as part of the C-BREC Fire Module
 #
 # Author: Micah Wright, Humboldt State University
+#         Jerome Carman, Schatz Energy Research Center
 ################################################################################
 #
 #Changes

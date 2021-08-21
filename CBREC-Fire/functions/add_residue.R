@@ -1,6 +1,6 @@
 ################################################################################
 # This script updates scattered fuels in FCCS fuelbeds with treatment residues
-# as part of the California Biopower Impact Project. 
+# as part of the C-BREC Fire Module.
 #
 # Author: Micah Wright, Humboldt State University
 ################################################################################

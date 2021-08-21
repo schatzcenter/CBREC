@@ -1,7 +1,6 @@
 ################################################################################
 # This script adds the residual fuel from RX burns back onto a recovered fuelbed
-# at each timestep. Includes decay. This is part of the CA Biopower Impact
-# Project.
+# at each timestep. Includes decay. This is part of the C-BREC Fire Module.
 #
 # dt_rx: rx burn output data table
 # dt_fuel: fuelbed without additional residues added

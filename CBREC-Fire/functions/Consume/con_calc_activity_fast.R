@@ -2,11 +2,11 @@
 # This script is an R translation of the woody fuels activity equations from
 # consume 4.2, which is distributed within fuel fire tools. This script 
 # leverages the data.table package to quickly run consume on a large data set. 
-# This translation was performed as part of the California Biopower Impact
-# Project for the C-BREC model. The code was modified to better match the goals
-# and geographic constraints of the project. 
+# This translation was performed for the C-BREC Fire Module. The code was modified
+# to better match the goals and geographic constraints of the project. 
 #
-# Tanslators: Micah Wright amd Andrew Harris, Humboldt State University
+# Translators: Micah Wright and Andrew Harris, Humboldt State University
+# Editing author: Jerome Carman, Schatz Energy Research Center
 #
 # 
 ################################################################################
@@ -261,7 +261,7 @@ ccon_activity_fast <- function(dt, fm_type, days_since_rain, DRR, burn_type){
         dt[, ffr := calculated_reduction] # ffr will be 0
         dt[ffr_total_depth < calculated_reduction, ffr := ffr_total_depth] 
         
-        ########### Max Comments ##################
+        ########### Note ##################
         # having duff values of zero creates a zero value for the ffr
         # a zero ffr will spread through the litter
         
@@ -325,8 +325,7 @@ ccon_activity_fast <- function(dt, fm_type, days_since_rain, DRR, burn_type){
         ###################################################
         
         # Calculate char for each size class. Char from RX burns is added if it exists
-        # 2019-07-10 jerome: changed so that mass consumed is passed to char_scat(). Was
-        #       originally passing mass remaining (hun_hr_sound - total_100).
+        #   Mass consumed is passed to char_scat().
         dt[, ':=' (char_100 = ifelse(total_100 + char_scat(total_100) > hun_hr_sound,
                                      hun_hr_sound - total_100,
                                      char_scat(total_100)),
@@ -349,47 +348,14 @@ ccon_activity_fast <- function(dt, fm_type, days_since_rain, DRR, burn_type){
                                           tnkp_hr_rotten - total_tnkp_rot,
                                           char_scat(total_tnkp_rot)))]
         
-        # update unburned so char is omitted
-        # 2019-06-25 jerome: moved subtraction of char to remove_rx_consumed()
-        # dt[, ':=' (hun_hr_sound = hun_hr_sound - char_100,
-        #            oneK_hr_sound = oneK_hr_sound - char_OneK_snd,
-        #            oneK_hr_rotten = oneK_hr_rotten - char_OneK_rot,
-        #            tenK_hr_sound = tenK_hr_sound - char_tenK_snd,
-        #            tenK_hr_rotten = tenK_hr_rotten - char_tenK_rot,
-        #            tnkp_hr_sound = tnkp_hr_sound - char_tnkp_snd,
-        #            tnkp_hr_rotten = tnkp_hr_rotten - char_tnkp_rot)]
-        
-        # add previously existing char
-        # *** CONSIDER REMOVING CUMULATIVE CHAR. JUST OVERWRITE ***
-        # if (exists("char_100_rx", dt)) {
-        #         
-        #         dt[, ':=' (char_100 = char_100_rx + char_100, 
-        #                    char_OneK_snd = char_OneK_snd_rx + char_OneK_snd, 
-        #                    char_OneK_rot = char_OneK_rot_rx + char_OneK_rot, 
-        #                    char_tenK_snd = char_tenK_snd_rx + char_tenK_snd, 
-        #                    char_tenK_rot = char_tenK_rot_rx + char_tenK_rot, 
-        #                    char_tnkp_snd = char_tnkp_snd_rx + char_tnkp_snd, 
-        #                    char_tnkp_rot = char_tnkp_rot_rx + char_tnkp_rot)]
-        #         
-        # } 
-        
         # Calculate pile char
         # Note: does not include "Pile" in conditional because, in that case, ccon_activity_piled_only_fast()
         #       is called in burn_residue()
-        # 2019-07-02 jerome: Changed "Pile_Broadcast" to "Pile and Broadcast"
-        # 2019-07-02 jerome: moved subtraction of char to remove_rx_consumed() - I missed this in the 6/25/19 change
-        # 2019-07-10 jerome: changes mass passed to char_pile() to mass exposed. Was
-        #       originally massed mass remaining (pile_load * 0.1)
         if (burn_type %in% c("Pile and Broadcast", "None")) {
-                dt[, pile_char := char_pile(pile_load)]#[, pile_load := pile_load - pile_char]
+                dt[, pile_char := char_pile(pile_load)]
         } else {
                 dt[, pile_char := 0]
         }
-        
-        # *** CONSIDER REMOVING CUMULATIVE CHAR. JUST OVERWRITE ***
-        # if (exists("pile_char_rx", dt)) {
-        #         dt[, pile_char := pile_char + pile_char_rx]
-        # }
         
         # aggregate the data as much as possible to get residue only and total by combustion phase
         # first aggregate the total consumed by combustion phase
@@ -501,15 +467,7 @@ ccon_activity_piled_only_fast <- function(dt) {
         
         # calculate char and update remaining mass
         # calculate pile char and update remaining mass
-        # 2019-06-25 jerome: moved subtraction of char to remove_rx_consumed()
-        # 2019-07-10 jerome: changes mass passed to char_pile() to mass exposed. Was
-        #       originally massed mass remaining (pile_load * 0.1)
-        dt[, pile_char := char_pile(pile_load)] #[, pile_load := pile_load - pile_char]
-        
-        #2019-07-05 jerome: remove cumulative char. Just overwrite.
-        # if (exists("pile_char_rx", dt)) {
-        #         dt[, pile_char := pile_char + pile_char_rx]
-        # }
+        dt[, pile_char := char_pile(pile_load)]
         
         # assign 0 values to other burn cols for eval in calc_emissions
         c_phase <- c("flamg", "smoldg", "resid")

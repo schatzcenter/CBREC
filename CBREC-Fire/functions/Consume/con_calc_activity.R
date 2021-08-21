@@ -2,14 +2,14 @@
 # This script is an R translation of the woody fuels activity equations from
 # consume 4.2, which is distributed within fuel fire tools. Whenever possible, 
 # function, variable names, and comments from the original python script were
-# preserved. This translation was performed as part of the California Biopower 
-# Impact Project for the CARBCAT model. The code was modified to better match 
-# the goals and geographic constraints of the project. Litter consumption
-# equations and some generic functions are also included here.
+# preserved. This translation was performed as part of the C-BREC Fire Module.
+# The code was modified to better match the goals and geographic constraints
+# of the project. Litter consumption equations and some generic functions are
+# also included here.
 # 
-# Tanslator: Micah Wright, Humboldt State University
+# Translator: Micah Wright, Humboldt State University
 #
-# 
+# NOTE: THIS SCRIPT IS NO LONGER USED, BUT IS RETAINED FOR DOCUMENTATION AND REFERENCE
 ################################################################################
 
 # vector of quadratic mean diameters for 100, 1,000, 10,000, and >10,000 hour

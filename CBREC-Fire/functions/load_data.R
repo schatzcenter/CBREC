@@ -1,7 +1,6 @@
 ################################################################################
 # This script loads the residue, fuelbed, and location attribute data and 
-# combines them into a single data.table as part of the California Biopower 
-# Impact Project. 
+# combines them into a single data.table as part of the C-BREC Fire Module.
 # 
 # burn_type: None (wf), Broacast, Pile, or Jackpot
 # biomass_collection: yes/no

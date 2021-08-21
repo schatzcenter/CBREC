@@ -6,7 +6,11 @@
 # t_range: range or single integer that corresponds to specific tile numbers 
 # save_runtime: save runtime to .rds file? default TRUE
 #
-# Author: Micah Wright 
+# Authors: Micah Wright
+#          Jerome Carman
+#          Max Blasdel
+#
+# Version: 1.2.1
 ################################################################################
 
 run_all <- function(t_range = NULL, save_runtime = TRUE) {
