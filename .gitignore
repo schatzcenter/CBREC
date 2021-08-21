@@ -1,3 +1,7 @@
+# git files
+.gitignore
+.gitattributes
+
 # History files
 .Rhistory
 .Rapp.history
@@ -36,6 +40,9 @@ vignettes/*.pdf
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
 
+# input data common to both CBREC-Fire and CBREC-LCA
+common-inputs/
+
 # CBREC-Fire input and output data
 CBREC-Fire/input
 CBREC-Fire/output
@@ -43,3 +50,7 @@ CBREC-Fire/output
 # CBREC-LCA input and output data
 CBREC-LCA/input
 CBREC-LCA/output
+
+# Misc
+CBREC-Framework_v1.2.1.pdf
+*.zip.*
