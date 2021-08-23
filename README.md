@@ -94,8 +94,8 @@ Release versions (on GitHub and Zenodo) will always correlate. Furthermore, the 
 ## Authors
 
 * [Jerome Qiriazi](https://github.com/jqiriazi) (Corresponding Author, Project Manager) - [Schatz Energy Research Center](https://schatzcenter.org)
-* [Andrew Harris](https://github.com/arharris) - [Schatz Energy Research Center](https://schatzcenter.org)
-* [Micah Wright](https://github.com/wrightmicahc) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/) and [Schatz Energy Research Center](https://schatzcenter.org)
+* [Andrew Harris](https://github.com/arharris) (Lead Developer on C-BREC LCA Module) - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Micah Wright](https://github.com/wrightmicahc) (Lead Developer on C-BREC Fire Module) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/) and [Schatz Energy Research Center](https://schatzcenter.org)
 * [Max Blasdel](https://github.com/mxblsdl) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Chih-Wei Hsu](https://www.linkedin.com/in/chihweihsu/) - [Schatz Energy Research Center](https://schatzcenter.org)
 * Jeffrey Kane - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/)

@@ -396,9 +396,9 @@ We use [git](https://git-scm.com/) for version control on this project. For a co
 
 ### Authors
 
-* [Jerome Qiriazi](https://github.com/jqiriazi) (Corresponding Author, Project Manager) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Andrew Harris](https://github.com/arharris) (Lead Developer) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Max Blasdel](https://github.com/mxblsdl) - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Jerome Qiriazi](https://github.com/jqiriazi) (Corresponding Author, Project Manager) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Micah Wright](https://github.com/wrightmicahc) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/) and [Schatz Energy Research Center](https://schatzcenter.org)
 * [Chih-Wei Hsu](https://www.linkedin.com/in/chihweihsu/) - [Schatz Energy Research Center](https://schatzcenter.org)
 * Kevin Fingerman (Principal Investigator) - [Humboldt State University Department of Environmental Science and Management](https://environment.humboldt.edu/)
@@ -406,7 +406,7 @@ We use [git](https://git-scm.com/) for version control on this project. For a co
 ### Acknowledgments
 
 * The authors would like to thank the California Energy Commission's (CEC) Electric Program Investment Charge (EPIC) program for its support of this research under contract EPC-16-047, and in particular Commission Agreement Managers Katharina Gerber and David Stoms for their indispensable assistance. The C-BREC Model would not have been possible without the contributions and commitment of the following members and organizations:
-  - Schatz Energy Research Center: Cassidy Barrientos, Carisse Geronimo, Sabrinna Rios-Romero, Mark Severy, and Eli Wallach
+  - [Schatz Energy Research Center](https://schatzcenter.org): Cassidy Barrientos, Carisse Geronimo, Sabrinna Rios-Romero, Mark Severy, and Eli Wallach
   - [Natural Resource Spatial Informatics Group](https://nrsig.org): Luke Rogers and Jeff Comnick
   - [Consortium for Research on Renewable Industrial Materials](https://corrim.org/): Elaine Oneil and Maureen Puettmann
 
