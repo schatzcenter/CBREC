@@ -300,7 +300,7 @@ We use [git](https://git-scm.com/) for version control on this project. For a co
 
 ## Authors
 
-* [Micah Wright](https://github.com/wrightmicahc) (Lead Author) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/) and [Schatz Energy Research Center](https://schatzcenter.org)
+* [Micah Wright](https://github.com/wrightmicahc) (Lead Developer) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/) and [Schatz Energy Research Center](https://schatzcenter.org)
 * Jeffrey Kane (Corresponding Author) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/)
 * [Andrew Harris](https://github.com/arharris) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Max Blasdel](https://github.com/mxblsdl) - [Schatz Energy Research Center](https://schatzcenter.org)
