@@ -298,7 +298,7 @@ The residual fuels table has the following columns. All residual fuels are in gr
 
 We use [git](https://git-scm.com/) for version control on this project. For a complete history, see the [this repository](https://github.com/SchatzCenter/CBREC). 
 
-## Authors
+### Authors
 
 * [Micah Wright](https://github.com/wrightmicahc) (Lead Developer) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/) and [Schatz Energy Research Center](https://schatzcenter.org)
 * Jeffrey Kane (Corresponding Author) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/)

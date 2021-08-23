@@ -104,9 +104,9 @@ Release versions (on GitHub and Zenodo) will always correlate. Furthermore, the 
 ## Acknowledgments
 
 * The authors would like to thank the California Energy Commission's (CEC) Electric Program Investment Charge (EPIC) program for its support of this research under contract EPC-16-047, and in particular Commission Agreement Managers Katharina Gerber and David Stoms for their indispensable assistance. The C-BREC Model would not have been possible without the contributions and commitment of the following members and organizations:
-  - Schatz Energy Research Center: Cassidy Barrientos, Carisse Geronimo, Sabrinna Rios-Romero, and Mark Severy
-  - Natural Resource Spatial Informatics Group: Luke Rogers and Jeff Comnick
-  - Consortium for Research on Renewable Industrial Materials: Elaine Oneil and Maureen Puettmann
+  - [Schatz Energy Research Center](https://schatzcenter.org): Cassidy Barrientos, Carisse Geronimo, Sabrinna Rios-Romero, Mark Severy, and Eli Wallach
+  - [Natural Resource Spatial Informatics Group](https://nrsig.org): Luke Rogers and Jeff Comnick
+  - [Consortium for Research on Renewable Industrial Materials](https://corrim.org/): Elaine Oneil and Maureen Puettmann
 
 * This research was much improved by the ongoing input and support of the members of our Technical Advisory Committee and in particular of its chair, Andrea Tuttle.
 
