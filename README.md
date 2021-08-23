@@ -93,10 +93,10 @@ Release versions (on GitHub and Zenodo) will always correlate. Furthermore, the 
 
 ## Authors
 
+* [Jerome Qiriazi](https://github.com/jqiriazi) (Corresponding Author) - [Schatz Energy Research Center](https://schatzcenter.org)
 * Andrew Harris (Lead Author) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Micah Wright](https://github.com/wrightmicahc) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/) and [Schatz Energy Research Center](https://schatzcenter.org)
 * [Max Blasdel](https://github.com/mxblsdl) - [Schatz Energy Research Center](https://schatzcenter.org)
-* [Jerome Qiriazi](https://github.com/jqiriazi) (Corresponding Author) - [Schatz Energy Research Center](https://schatzcenter.org)
 * Chih-Wei Hsu - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Jeff Kane](https://fwr.humboldt.edu/people/jeffrey-kane) - [Humboldt State University Department of Forestry & Wildland Resource](https://fwr.humboldt.edu/)
 * Kevin Fingerman (Project PI) - [Humboldt State University Department of Environmental Science and Management](https://environment.humboldt.edu/)
