@@ -62,7 +62,8 @@ install.packages("data.table")
 
 ### Input Data
 
-A substantial amount of input data is necessary to run the C-BREC Model. Find a snapshot of this release at ??? which includes the input data necessary.
+A substantial amount of input data is necessary to run the C-BREC Model. Find these data at [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5230532.svg)](https://doi.org/10.5281/zenodo.5230532)
+
 
 All static input data required to run both the C-BREC Fire Module and the C-BREC LCA Module can be downloaded via the Zenodo link provided above. The download preserves the required directory structure. It also includes the code associated with the release correlated to it. If downloading the input data for use in a later release, do not use the R scripts included in the data download.
 
