@@ -396,11 +396,12 @@ We use [git](https://git-scm.com/) for version control on this project. For a co
 
 ### Authors
 
-* Andy Harris (Lead Author) - [Schatz Energy Research Center](https://schatzcenter.org)
-* [Jerome Qiriazi](https://github.com/jqiriazi) (Project Manager) - [Schatz Energy Research Center](https://schatzcenter.org)
+* [Jerome Qiriazi](https://github.com/jqiriazi) (Corresponding Author) - [Schatz Energy Research Center](https://schatzcenter.org)
+* Andrew Harris (Lead Author) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Max Blasdel](https://github.com/mxblsdl) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Micah Wright](https://github.com/wrightmicahc) - [Schatz Energy Research Center](https://schatzcenter.org)
 * [Chih-Wei Hsu](https://www.linkedin.com/in/chihweihsu/) - [Schatz Energy Research Center](https://schatzcenter.org)
+* Kevin Fingerman (Project PI) - [Humboldt State University Department of Environmental Science and Management](https://environment.humboldt.edu/)
 
 ### Acknowledgments
 
