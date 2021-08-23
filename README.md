@@ -1,5 +1,4 @@
-**California Biomass Residue Emissions Characterization (C-BREC) Model** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5230273.svg)](https://doi.org/10.5281/zenodo.5230273)
-
+**California Biomass Residue Emissions Characterization (C-BREC) Model**
 ===================================================================
 
 The [California Biomass Residue Emissions Characterization (C-BREC) Model](https://schatzcenter.org/cbrec) is a life cycle assessment (LCA) framework specific to the use of California forest residues for electricity generation. It enables robust and transparent accounting of greenhouse gases and air pollutant emissions associated with residual woody biomass energy systems in California. The model allows specification of the following key characteristics at the individual project level:
@@ -12,6 +11,8 @@ The [California Biomass Residue Emissions Characterization (C-BREC) Model](https
 * Supply chain characteristics
 
 Additional methodological documentation can be found on the [C-BREC Model website](https://schatzcenter.org/cbrec). The C-BREC Model was originally developed as part of the [California Biopower Impact Project](https://schatzcenter.org/cbip/) and is maintained by the [Schatz Energy Research Center](https://schatzcenter.org). The remote repository for this model can be found at [github.com/SchatzCenter/CBREC](https://github.com/SchatzCenter/CBREC).
+
+Please cite using the following DOI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5230273.svg)](https://doi.org/10.5281/zenodo.5230273)
 
 ## Installation
 
